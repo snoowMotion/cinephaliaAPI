@@ -5,6 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\Cinema;
 use App\Entity\Qualite;
 use App\Entity\Salle;
+use App\Entity\Seance;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -62,5 +63,16 @@ class SalleTest extends TestCase
         $nbPlacePmr = 10;
         $salle->setNbPlacePmr($nbPlacePmr);
         $this->assertSame($nbPlacePmr, $salle->getNbPlacePmr());
+    }
+
+    #[Test]
+    public function testGetSetSeance()
+    {
+        $salle = new Salle();
+        $seance = new Seance();
+        $salle->addSeance($seance);
+        $this->assertCount(1, $salle->getSeances());
+        $salle->removeSeance($seance);
+        $this->assertCount(0, $salle->getSeances());
     }
 }
