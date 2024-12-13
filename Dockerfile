@@ -25,8 +25,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PHP_UPLOAD_MAX_FILE_SIZE=100M \
     PHP_ALLOW_URL_FOPEN=Off
 
-# Prepare base container: 
-# 1. Install PHP, Composer
+# Prepare base container:
+# 1. Install PHP, Composer, and PostgreSQL
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY .fly/php/ondrej_ubuntu_php.gpg /etc/apt/trusted.gpg.d/ondrej_ubuntu_php.gpg
 ADD .fly/php/packages/${PHP_VERSION}.txt /tmp/php-packages.txt
@@ -34,6 +34,7 @@ ADD .fly/php/packages/${PHP_VERSION}.txt /tmp/php-packages.txt
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gnupg2 ca-certificates git-core curl zip unzip \
                                                   rsync vim-tiny htop sqlite3 nginx supervisor cron \
+                                                  postgresql postgresql-contrib \
     && ln -sf /usr/bin/vim.tiny /etc/alternatives/vim \
     && ln -sf /etc/alternatives/vim /usr/bin/vim \
     && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ondrej-ubuntu-php-focal.list \
@@ -51,12 +52,12 @@ COPY .fly/supervisor/ /etc/supervisor/
 COPY .fly/entrypoint.sh /entrypoint
 COPY .fly/start-nginx.sh /usr/local/bin/start-nginx
 RUN chmod 754 /usr/local/bin/start-nginx
-    
+
 # 3. Copy application code, skipping files based on .dockerignore
 COPY . /var/www/html
 WORKDIR /var/www/html
 
-# 4. Setup application dependencies 
+# 4. Setup application dependencies
 RUN composer install --optimize-autoloader --no-dev \
     && mkdir -p storage/logs \
     && php artisan optimize:clear \
@@ -69,11 +70,7 @@ RUN composer install --optimize-autoloader --no-dev \
     if [ -d .fly ]; then cp .fly/entrypoint.sh /entrypoint; chmod +x /entrypoint; fi;
 
 
-
-
-
-# 5. Setup Entrypoint
+# 6. Setup Entrypoint
 EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint"]
-
