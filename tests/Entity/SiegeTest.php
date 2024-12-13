@@ -40,8 +40,7 @@ class SiegeTest extends TestCase
     public function testGetSetPMR()
     {
         $siege = new Siege();
-        $isPMR = true;
-        $siege->setPMR($isPMR);
-        $this->assertSame($isPMR, $siege->isPMR());
+        $siege->setPMR(true);
+        $this->assertSame(true, $siege->isPMR());
     }
 }

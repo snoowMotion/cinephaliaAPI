@@ -21,6 +21,9 @@ class Siege
     #[ORM\JoinColumn(nullable: false)]
     private ?Salle $salle = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isPMR = false;
+
     public function getId(): ?int
     {
         return $this->id;
