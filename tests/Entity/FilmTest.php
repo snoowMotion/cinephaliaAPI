@@ -3,6 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Film;
+use App\Entity\Genre;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -61,5 +62,14 @@ class FilmTest extends TestCase
         $label = 'PG-13';
         $film->setLabel($label);
         $this->assertSame($label, $film->getLabel());
+    }
+
+    #[Test]
+    public function testGetSetGenre()
+    {
+        $film = new Film();
+        $genre = new Genre();
+        $film->setGenre($genre);
+        $this->assertSame($genre, $film->getGenre());
     }
 }
