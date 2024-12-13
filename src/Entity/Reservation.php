@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReservationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
@@ -25,6 +27,17 @@ class Reservation
 
     #[ORM\Column]
     private ?bool $isFinish = null;
+
+    /**
+     * @var Collection<int, LinkReservationSiege>
+     */
+    #[ORM\OneToMany(targetEntity: LinkReservationSiege::class, mappedBy: 'reservation')]
+    private Collection $linkReservationSieges;
+
+    public function __construct()
+    {
+        $this->linkReservationSieges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -63,6 +76,36 @@ class Reservation
     public function setFinish(bool $isFinish): static
     {
         $this->isFinish = $isFinish;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LinkReservationSiege>
+     */
+    public function getLinkReservationSieges(): Collection
+    {
+        return $this->linkReservationSieges;
+    }
+
+    public function addLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if (!$this->linkReservationSieges->contains($linkReservationSiege)) {
+            $this->linkReservationSieges->add($linkReservationSiege);
+            $linkReservationSiege->setReservation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if ($this->linkReservationSieges->removeElement($linkReservationSiege)) {
+            // set the owning side to null (unless already changed)
+            if ($linkReservationSiege->getReservation() === $this) {
+                $linkReservationSiege->setReservation(null);
+            }
+        }
 
         return $this;
     }

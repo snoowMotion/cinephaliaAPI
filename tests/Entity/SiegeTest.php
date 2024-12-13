@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\LinkReservationSiege;
 use App\Entity\Salle;
 use App\Entity\Siege;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -42,5 +43,16 @@ class SiegeTest extends TestCase
         $siege = new Siege();
         $siege->setPMR(true);
         $this->assertSame(true, $siege->isPMR());
+    }
+
+    #[Test]
+    public function testGetSetLinkReservationSiege()
+    {
+        $siege = new Siege();
+        $linkReservationSiege = new LinkReservationSiege();
+        $siege->addLinkReservationSiege($linkReservationSiege);
+        $this->assertCount(1, $siege->getLinkReservationSieges());
+        $siege->removeLinkReservationSiege($linkReservationSiege);
+        $this->assertCount(0, $siege->getLinkReservationSieges());
     }
 }
