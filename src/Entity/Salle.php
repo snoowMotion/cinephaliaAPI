@@ -41,9 +41,16 @@ class Salle
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'salle')]
     private Collection $seances;
 
+    /**
+     * @var Collection<int, Siege>
+     */
+    #[ORM\OneToMany(targetEntity: Siege::class, mappedBy: 'salle')]
+    private Collection $sieges;
+
     public function __construct()
     {
         $this->seances = new ArrayCollection();
+        $this->sieges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +142,36 @@ class Salle
             // set the owning side to null (unless already changed)
             if ($seance->getSalle() === $this) {
                 $seance->setSalle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Siege>
+     */
+    public function getSieges(): Collection
+    {
+        return $this->sieges;
+    }
+
+    public function addSiege(Siege $siege): static
+    {
+        if (!$this->sieges->contains($siege)) {
+            $this->sieges->add($siege);
+            $siege->setSalle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSiege(Siege $siege): static
+    {
+        if ($this->sieges->removeElement($siege)) {
+            // set the owning side to null (unless already changed)
+            if ($siege->getSalle() === $this) {
+                $siege->setSalle(null);
             }
         }
 

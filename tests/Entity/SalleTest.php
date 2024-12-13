@@ -6,6 +6,7 @@ use App\Entity\Cinema;
 use App\Entity\Qualite;
 use App\Entity\Salle;
 use App\Entity\Seance;
+use App\Entity\Siege;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -74,5 +75,16 @@ class SalleTest extends TestCase
         $this->assertCount(1, $salle->getSeances());
         $salle->removeSeance($seance);
         $this->assertCount(0, $salle->getSeances());
+    }
+
+    #[Test]
+    public function testGetSetSiege()
+    {
+        $salles = new Salle();
+        $siege = new Siege();
+        $salles->addSiege($siege);
+        $this->assertCount(1, $salles->getSieges());
+        $salles->removeSiege($siege);
+        $this->assertCount(0, $salles->getSieges());
     }
 }
