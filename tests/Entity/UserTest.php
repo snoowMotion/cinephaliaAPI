@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\Reservation;
 use App\Entity\Role;
 use App\Entity\User;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -80,5 +81,16 @@ class UserTest extends TestCase
         $email = 'test@example.com';
         $user->setEmail($email);
         $this->assertSame($email, $user->getUserIdentifier());
+    }
+
+    #[Test]
+    public function testGetSetReservation()
+    {
+        $user = new User();
+        $reser = new Reservation();
+        $user->addReservation($reser);
+        $this->assertCount(1, $user->getReservations());
+        $user->removeReservation($reser);
+        $this->assertCount(0, $user->getReservations());
     }
 }

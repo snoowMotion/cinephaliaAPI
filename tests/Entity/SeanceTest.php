@@ -3,6 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Film;
+use App\Entity\Reservation;
 use App\Entity\Salle;
 use App\Entity\Seance;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -53,5 +54,16 @@ class SeanceTest extends TestCase
         $film = new Film();
         $seance->setFilm($film);
         $this->assertSame($film, $seance->getFilm());
+    }
+
+    #[Test]
+    public function testGetSetReservation()
+    {
+        $seance = new Seance();
+        $reservation = new Reservation();
+        $seance->addReservation($reservation);
+        $this->assertCount(1, $seance->getReservations());
+        $seance->removeReservation($reservation);
+        $this->assertCount(0, $seance->getReservations());
     }
 }
