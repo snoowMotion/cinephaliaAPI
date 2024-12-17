@@ -22,7 +22,7 @@ class Role
     private ?string $libelle = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
-    private ArrayCollection $users;
+    private Collection $users;
 
     public function __construct()
     {
