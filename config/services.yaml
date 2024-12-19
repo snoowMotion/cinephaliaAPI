@@ -33,5 +33,9 @@ services:
         tags:
             - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_created', method: 'onJWTCreated' }
 
+    # Controllers are usually registered automatically, but you can explicitly register them if needed
+    App\Controller\SalleController:
+        tags: [ 'controller.service_arguments' ]
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

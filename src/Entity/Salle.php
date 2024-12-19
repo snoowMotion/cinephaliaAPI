@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\ReservationController;
+use App\Controller\SalleController;
 use App\Repository\SalleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,9 +19,12 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
-    ],
-    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
+        new Post(
+            uriTemplate: '/api/salles',
+            controller: SalleController::class,
+            name: 'create_salle',
+        )
+    ]
 )]
 class Salle
 {
