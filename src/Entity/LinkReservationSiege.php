@@ -27,7 +27,7 @@ class LinkReservationSiege
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Reservation $reservation = null;
 
     #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
