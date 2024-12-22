@@ -12,6 +12,7 @@ use App\Repository\SeanceRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  *
  * Cette classe contient des tests unitaires pour le SeanceRepository.
  */
+#[CoversClass(SeanceRepository::class)]
 class SeanceRepositoryTest extends KernelTestCase
 {
     private EntityManagerInterface $entityManager;
@@ -70,6 +72,7 @@ class SeanceRepositoryTest extends KernelTestCase
      * Ce test crée et persiste une entité Seance, puis vérifie si la méthode
      * isSeanceExists identifie correctement la séance existante.
      */
+
     public function testIsSeanceExistsReturnsTrue(): void
     {
         // Crée et persiste une entité Seance
