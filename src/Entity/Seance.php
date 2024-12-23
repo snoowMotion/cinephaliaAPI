@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\SeanceController;
 use App\Repository\SeanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,9 +19,12 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
+        new Post(
+            uriTemplate: '/api/seances',
+            controller: SeanceController::class,
+            name: 'create_seance',
+        )
     ],
-    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
 )]
 class Seance
 {
