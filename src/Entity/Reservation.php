@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new Post(
-            uriTemplate: '/custom-endpoint',
+            uriTemplate: '/api/reservations',
             controller: ReservationController::class,
         )
     ]

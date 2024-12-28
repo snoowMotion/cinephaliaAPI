@@ -7,49 +7,60 @@ use App\Entity\Film;
 use App\Entity\Genre;
 use App\Entity\LinkReservationSiege;
 use App\Entity\Qualite;
-use App\Entity\Reservation;
+use App\Entity\Role;
 use App\Entity\Salle;
 use App\Entity\Seance;
 use App\Entity\Siege;
-use App\Repository\ReservationRepository;
+use App\Entity\User;
 use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class InitDataTest extends KernelTestCase
+class InitDataWebTest extends WebTestCase
 {
-    public EntityManagerInterface $entityManager;
+        public $client;
 
     /**
+     * Configure l'environnement de test.
+     *
+     * Cette méthode est appelée avant chaque test. Elle initialise le kernel de Symfony,
+     * configure l'entity manager et recrée le schéma de la base de données.
+     *
      * @throws Exception
      */
     protected function setUp(): void
     {
-        $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()
+        $this->client = static::createClient();
+        $this->entityManager = self::$kernel->getContainer()
             ->get('doctrine')->getManager();
 
         $schemaTool = new SchemaTool($this->entityManager);
         $connection = $this->entityManager->getConnection();
 
+        // Supprime les schémas existants et crée un nouveau schéma public
         $connection->executeStatement('DROP SCHEMA IF EXISTS cinephaliaapi CASCADE');
         $connection->executeStatement('DROP SCHEMA IF EXISTS public CASCADE');
         $connection->executeStatement('CREATE SCHEMA public');
 
+        // Récupère les métadonnées des entités et recrée le schéma
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool->createSchema($metadata);
 
-        $this->reservationRepository = $this->entityManager->getRepository(Reservation::class);
+        $this->repository = $this->entityManager->getRepository(Seance::class);
     }
 
+    /**
+     * Nettoie l'environnement de test.
+     *
+     * Cette méthode est appelée après chaque test. Elle ferme l'entity manager.
+     */
     protected function tearDown(): void
     {
         parent::tearDown();
         $this->entityManager->close();
     }
 
-    public function createData()
+    public function createData($withSeance = false)
     {
         $seance = new Seance();
         $film = new Film();
@@ -122,4 +133,20 @@ class InitDataTest extends KernelTestCase
     }
 
 
+    public function logIn()
+    {
+        $testUser = new User();
+        $role = new Role();
+        $role->setLibelle('ROLE_ADMIN');
+        $testUser->setEmail('test@test.fr');
+        $testUser->setPassword('test');
+        $testUser->setNom('test');
+        $testUser->setPrenom('test');
+        $testUser->addRole($role);
+        $this->entityManager->persist($testUser);
+        $this->entityManager->persist($role);
+        $this->entityManager->flush();
+        // Simule la connexion de $testUser
+        $this->client->loginUser($testUser);
+    }
 }

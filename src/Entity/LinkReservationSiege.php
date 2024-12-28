@@ -34,6 +34,9 @@ class LinkReservationSiege
     #[ORM\JoinColumn(nullable: false)]
     private ?Siege $siege = null;
 
+    #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
+    private ?Seance $seance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class LinkReservationSiege
     public function setSiege(?Siege $siege): static
     {
         $this->siege = $siege;
+
+        return $this;
+    }
+
+    public function getSeance(): ?Seance
+    {
+        return $this->seance;
+    }
+
+    public function setSeance(?Seance $seance): static
+    {
+        $this->seance = $seance;
 
         return $this;
     }

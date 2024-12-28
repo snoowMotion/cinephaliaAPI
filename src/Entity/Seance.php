@@ -53,9 +53,16 @@ class Seance
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'seance')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, LinkReservationSiege>
+     */
+    #[ORM\OneToMany(targetEntity: LinkReservationSiege::class, mappedBy: 'seance')]
+    private Collection $linkReservationSieges;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->linkReservationSieges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +142,36 @@ class Seance
             // set the owning side to null (unless already changed)
             if ($reservation->getSeance() === $this) {
                 $reservation->setSeance(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LinkReservationSiege>
+     */
+    public function getLinkReservationSieges(): Collection
+    {
+        return $this->linkReservationSieges;
+    }
+
+    public function addLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if (!$this->linkReservationSieges->contains($linkReservationSiege)) {
+            $this->linkReservationSieges->add($linkReservationSiege);
+            $linkReservationSiege->setSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if ($this->linkReservationSieges->removeElement($linkReservationSiege)) {
+            // set the owning side to null (unless already changed)
+            if ($linkReservationSiege->getSeance() === $this) {
+                $linkReservationSiege->setSeance(null);
             }
         }
 
