@@ -28,6 +28,11 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
         tags:
             - { name: serializer.normalizer }
+    App\DataTransformer\UserInputDataTransformer:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+        tags:
+            - { name: serializer.normalizer }
 
     App\EventListener\JWTCreatedListener:
         tags:
