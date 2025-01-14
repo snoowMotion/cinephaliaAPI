@@ -2,17 +2,21 @@
 
 namespace App\DataTransformer;
 
+use App\Entity\Role;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class UserInputDataTransformer implements DenormalizerInterface
 {
 
     private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $passwordHasher;
+    private EntityManager $entityManager;
 
-    public function __construct(\Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $passwordHasher)
+    public function __construct(\Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher $passwordHasher, EntityManager $entityManager)
     {
         $this->passwordHasher = $passwordHasher;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -41,7 +45,8 @@ class UserInputDataTransformer implements DenormalizerInterface
         {
             $user->setPrenom($data['prenom']);
         }
-
+        $roleUser = $this->entityManager->getRepository(Role::class)->findOneBy(['libelle' => 'ROLE_USER']);
+        $user->addRole($roleUser);
         return $user;
 
     }

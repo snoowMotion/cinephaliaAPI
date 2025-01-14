@@ -31,6 +31,7 @@ services:
     App\DataTransformer\UserInputDataTransformer:
         arguments:
             $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
         tags:
             - { name: serializer.normalizer }
 
