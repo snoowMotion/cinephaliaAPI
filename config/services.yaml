@@ -43,5 +43,11 @@ services:
     App\Controller\SalleController:
         tags: [ 'controller.service_arguments' ]
 
+
+    App\DataPersister\FilmInputDataTransformer:
+        tags: [ 'api_platform.processor' ]
+
+    App\DataPersister\FilmDataPersister:
+        tags: [ 'api_platform.processor' ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

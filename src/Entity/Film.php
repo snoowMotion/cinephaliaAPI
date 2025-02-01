@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\DataPersister\FilmInputDataTransformer;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,7 +18,12 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
+        new Post(
+            inputFormats: ['multipart' => ['multipart/form-data']], // On désactive la désérialisation JSON pour cette opération
+            security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')",
+            deserialize: false,
+        processor: FilmInputDataTransformer::class
+        )
     ],
     security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
 )]
