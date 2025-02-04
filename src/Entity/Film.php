@@ -11,9 +11,11 @@ use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 #[ORM\Table(name: 'film', schema: 'cinephaliaapi')]
+
 #[ApiResource(
     operations: [
         new Get(),
@@ -25,6 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
         processor: FilmInputDataTransformer::class
         )
     ],
+    normalizationContext: ['groups' => ['film:read']],
     security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
 )]
 class Film
@@ -32,24 +35,31 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['film:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[Groups(['film:read'])]
     private ?string $titre = '';
 
     #[ORM\Column(length: 2500, options: ['default' => ''])]
+    #[Groups(['film:read'])]
     private ?string $synopsis = '';
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[Groups(['film:read'])]
     private ?string $afficheUrl = '';
 
     #[ORM\Column(options: ['default' => 0])]
+    #[Groups(['film:read'])]
     private ?int $ageMini = 0;
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[Groups(['film:read'])]
     private ?string $label = '';
 
     #[ORM\ManyToOne(inversedBy: 'films')]
+    #[Groups(['film:read'])]
     private ?Genre $genre = null;
 
     /**
