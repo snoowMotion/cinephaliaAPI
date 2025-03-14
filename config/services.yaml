@@ -28,6 +28,12 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
         tags:
             - { name: serializer.normalizer }
+    App\DataTransformer\UserInputDataTransformer:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: serializer.normalizer }
 
     App\EventListener\JWTCreatedListener:
         tags:
@@ -37,5 +43,15 @@ services:
     App\Controller\SalleController:
         tags: [ 'controller.service_arguments' ]
 
+
+    App\DataPersister\FilmInputDataTransformer:
+        tags: [ 'api_platform.processor' ]
+
+    App\DataPersister\FilmDataPersister:
+        tags: [ 'api_platform.processor' ]
+
+    # Explicitly register the FilmPutController
+    App\Controller\FilmPutController:
+        tags: [ 'controller.service_arguments' ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

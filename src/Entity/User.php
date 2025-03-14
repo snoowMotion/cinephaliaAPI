@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
@@ -15,18 +16,20 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user', schema: 'cinephaliaapi')]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['user:read']]),
-        new Post(denormalizationContext: ['groups' => ['user:write']]),
-        new Put(denormalizationContext: ['groups' => ['user:write']]),
-        new Delete()
+        new Post(normalizationContext: ['groups' => ['user:read']], denormalizationContext: ['groups' => ['user:write']], security: "is_granted('PUBLIC_ACCESS')"),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']],security: "is_granted('ROLE_ADMIN')"),
+        new Get(normalizationContext: ['groups' => ['user:read']], security: "is_granted('ROLE_ADMIN')"),
+        new Put(denormalizationContext: ['groups' => ['user:write']], security: "object == user or is_granted('ROLE_ADMIN')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')")
     ],
     normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
+    denormalizationContext: ['groups' => ['user:write']],
+    security: "is_granted('IS_AUTHENTICATED_FULLY')"
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -44,6 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:write'])]
     private ?string $password = null;
 
+
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write'])]
     private ?string $nom = null;
@@ -54,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_roles')]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:write'])]
     private Collection $roles;
 
     /**
