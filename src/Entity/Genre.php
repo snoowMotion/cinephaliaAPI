@@ -43,6 +43,7 @@ class Genre
         $this->films = new ArrayCollection();
     }
 
+    #[Groups(['film:read'])]
     public function getId(): ?int
     {
         return $this->id;

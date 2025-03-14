@@ -49,5 +49,9 @@ services:
 
     App\DataPersister\FilmDataPersister:
         tags: [ 'api_platform.processor' ]
+
+    # Explicitly register the FilmPutController
+    App\Controller\FilmPutController:
+        tags: [ 'controller.service_arguments' ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

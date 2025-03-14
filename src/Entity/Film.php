@@ -6,6 +6,9 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\FilmController;
+use App\Controller\FilmPutController;
 use App\DataPersister\FilmInputDataTransformer;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,13 +24,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(),
         new GetCollection(),
         new Post(
-            inputFormats: ['multipart' => ['multipart/form-data']], // On désactive la désérialisation JSON pour cette opération
             security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')",
-            deserialize: false,
-        processor: FilmInputDataTransformer::class
+        ),
+        new Put(
+            security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')",
         )
     ],
-    normalizationContext: ['groups' => ['film:read']],
+    normalizationContext: ['groups' => ['film:read', 'film:write']],
     security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
 )]
 class Film
@@ -35,31 +38,31 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $titre = '';
 
     #[ORM\Column(length: 2500, options: ['default' => ''])]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $synopsis = '';
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $afficheUrl = '';
 
     #[ORM\Column(options: ['default' => 0])]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?int $ageMini = 0;
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $label = '';
 
     #[ORM\ManyToOne(inversedBy: 'films')]
-    #[Groups(['film:read'])]
+    #[Groups(['film:read', 'film:write'])]
     private ?Genre $genre = null;
 
     /**

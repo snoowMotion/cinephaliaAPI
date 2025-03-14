@@ -15,6 +15,7 @@ class FilmInputDataTransformer implements ProcessorInterface
     private RequestStack $requestStack;
     private EntityManagerInterface $em;
     private string $uploadDir;
+
     public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
     {
         $this->requestStack = $requestStack;
@@ -25,35 +26,43 @@ class FilmInputDataTransformer implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Film
     {
         $request = $this->requestStack->getCurrentRequest();
-        $genre = $this->em->getRepository(Genre::class)->find($request->get('genre'));
+
+        // Récupération du genre à partir de l'ID passé dans la requête
+        $genreId = $request->get('genre');
+        $genre = $this->em->getRepository(Genre::class)->findOneBy(['id' => $genreId]);
+        // Différencier création (POST) et mise à jour (PUT)
         if ($request && $request->isMethod('POST')) {
             $film = new Film();
-
-            // Récupérer les données depuis FormData
+            // Mise à jour des propriétés communes
             $film->setTitre($request->get('titre'));
             $film->setSynopsis($request->get('synopsis'));
             $film->setAgeMini((int) $request->get('age_mini'));
-
-            // Gérer le fichier
-            $file = $request->files->get('afficheUrl');
-
-            if ($file) {
-                $film->setAfficheUrl($file->getClientOriginalName());
-            }
-
-            /**
-             * @var UploadedFile $file
-             */
-
-            $file->move($this->uploadDir, $file->getClientOriginalName());
-
             $film->setGenre($genre);
             $film->setLabel($request->get('label'));
-            $this->em->persist($film);
-            $this->em->flush();
-            return $film;
+
+            // Gestion du fichier uploadé (si présent)
+            $file = $request->files->get('afficheUrl');
+
+            if ($file instanceof UploadedFile) {
+                // Générer un nom de fichier unique (pour éviter les collisions)
+                $newFilename = uniqid() . '-' . $file->getClientOriginalName();
+                // Déplacer le fichier dans le répertoire de destination
+                $file->move($this->uploadDir, $newFilename);
+                // Mettre à jour l'attribut afficheUrl
+                $film->setAfficheUrl($newFilename);
+            }
+            // Pour une requête PUT, si aucun fichier n'est envoyé, l'ancienne valeur est conservée
+
+        } elseif ($request && $request->isMethod('PUT')) {
+            $film = $data;
+        } else {
+            return $data;
         }
 
-        return $data;
+
+        $this->em->persist($film);
+        $this->em->flush();
+
+        return $film;
     }
 }
