@@ -37,3 +37,4 @@ tests/bootstrap.php
 grumphp.yml
 phpstan.dist.neon
 phpunit.xml.dist
+public/upload
