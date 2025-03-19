@@ -18,20 +18,23 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    console.log(data);
                     if (data.fileName) {
                         const afficheUrlInput = $('<input>')
                             .attr('type', 'hidden')
                             .attr('name', 'film[afficheUrl]')
                             .val(data.fileName);
                         form.append(afficheUrlInput);
+                        form.remove(fileInput)
 
                         form.off('submit').submit();
                     } else {
                         alert('File upload failed');
                     }
                 },
-                error: function () {
+                error: function (error) {
                     alert('File upload failed');
+                    console.log(error)
                 }
             });
         } else {

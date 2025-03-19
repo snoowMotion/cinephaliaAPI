@@ -30,9 +30,9 @@ final class FilmController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $afficheUrl = $form->get('afficheUrl')->getData();
+            $afficheUrl = $request->get('film')['afficheUrl'];
             if ($afficheUrl) {
-                $film->setAfficheUrl($afficheUrl ->getClientOriginalName());
+                $film->setAfficheUrl($afficheUrl);
             }
             $entityManager->persist($film);
             $entityManager->flush();
@@ -61,6 +61,11 @@ final class FilmController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $afficheUrl = $request->get('film')['afficheUrl'];
+            if ($afficheUrl) {
+                $film->setAfficheUrl($afficheUrl);
+            }
+            $entityManager->persist($film);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
