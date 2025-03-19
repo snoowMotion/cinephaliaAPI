@@ -1,0 +1,105 @@
+.logo{
+    width: 150px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+.header{
+    background-color: #c8ad7f;
+    height: 100px;
+    color: white;
+}
+/* Ensure the body takes up the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Wrapper to push the footer to the bottom */
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content should take up all available space */
+.content {
+    flex: 1;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark text color */
+    position: static;
+    bottom: 0;
+    width: 100%;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-container .form-group {
+    margin-bottom: 15px;
+}
+
+.login-container .form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.login-container .btn {
+    width: 100%;
+    padding: 10px;
+}
+
+.footer h5 {
+    font-weight: bold;
+}
+
+.footer p {
+    margin: 0;
+}
+
+.footer img {
+    width: 24px;
+    height: 24px;
+}
+
+.social-icon {
+    font-size: 24px; /* Size of the icons */
+    margin-right: 10px; /* Space between the icons */
+    color: #343a40; /* Color of the icons */
+}
+
+.social-icon:last-child {
+    margin-right: 0; /* Remove margin from the last icon */
+}
+
+.navbar {
+    margin-top: 0px;
+}
+
+.nav-link {
+    color: #343a40; /* Dark text color */
+}
+
+.nav-link:hover {
+    color: #007bff; /* Blue color on hover */
+}
+
+.forgot-password {
+    text-align: right;
+}

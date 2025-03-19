@@ -15,15 +15,22 @@ security:
             security: false
 
         login:
-            pattern:  ^/api/login
-            stateless: true
-            json_login:
-                check_path: /api/login
-                username_path: email
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            pattern: ^/login
             provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_home
+
+            logout:
+                path: app_logout
+                target: home
+
+            remember_me:
+                secret: '%env(APP_SECRET)%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
 
         api:
             pattern: ^/api

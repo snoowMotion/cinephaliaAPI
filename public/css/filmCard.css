@@ -1,0 +1,39 @@
+.film-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    max-width: 300px;
+    margin: 16px;
+}
+
+.film-card:hover {
+    transform: scale(1.05);
+}
+
+.film-card-image {
+    width: 100%;
+    height: 300px;
+}
+
+.film-card-content {
+    padding: 16px;
+}
+
+.film-card-title {
+    font-size: 1.5em;
+    margin: 0;
+    font-family: Ubuntu;
+    text-align: center;
+}
+
+.film-card-description {
+    font-size: 1em;
+    margin: 8px 0;
+}
+
+.film-card-release-date {
+    font-size: 0.9em;
+    color: #555;
+}
