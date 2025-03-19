@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Film{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('scripts/filmAdmin/new.js') }}"></script>
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+        <h1>Ajout d'un nouveau film</h1>
+        {{ include('film/_form.html.twig') }}
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-info btn-lg mt-3" href="{{ path('app_film_index') }}">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
+{% endblock %}

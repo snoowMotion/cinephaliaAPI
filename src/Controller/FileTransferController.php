@@ -16,7 +16,7 @@ class FileTransferController extends AbstractController
      * @param Request $request Requête HTTP
      * @return JsonResponse Réponse JSON
      */
-    #[Route('/api/upload', name: 'upload_fichier', methods: ['POST'])]
+    #[Route('/upload', name: 'upload_fichier', methods: ['POST'])]
     public function uploadFichier(Request $request): JsonResponse
     {
         $fichier = $request->files->get('file');

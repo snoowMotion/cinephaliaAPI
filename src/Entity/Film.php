@@ -14,6 +14,7 @@ use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
@@ -57,9 +58,9 @@ class Film
     #[Groups(['film:read', 'film:write'])]
     private ?int $ageMini = 0;
 
-    #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[ORM\Column()]
     #[Groups(['film:read', 'film:write'])]
-    private ?string $label = '';
+    private ?bool $label;
 
     #[ORM\ManyToOne(inversedBy: 'films')]
     #[Groups(['film:read', 'film:write'])]
@@ -129,12 +130,12 @@ class Film
         return $this;
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): ?bool
     {
         return $this->label;
     }
 
-    public function setLabel(string $label): static
+    public function setLabel(bool $label): static
     {
         $this->label = $label;
 
