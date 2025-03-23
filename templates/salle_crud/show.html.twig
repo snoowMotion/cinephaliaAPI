@@ -2,45 +2,15 @@
 
 {% block title %}Salle{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .salle-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .salle-header {
-            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
-            color: #fff;
-            padding: 20px;
-        }
-        .salle-header h1 {
-            margin: 0;
-            font-size: 1.75rem;
-        }
-        .salle-body {
-            padding: 20px;
-        }
-        .salle-table th {
-            width: 40%;
-            text-align: left;
-        }
-        .btn + .btn {
-            margin-left: 5px;
-        }
-    </style>
-{% endblock %}
 
 {% block body %}
     <div class="container mt-5">
-        <div class="card salle-card">
-            <div class="salle-header">
+        <div class="card employee-card">
+            <div class="employee-header">
                 <h1>Détails de la Salle</h1>
             </div>
             <div class="salle-body">
-                <table class="table salle-table">
+                <table class="table employee-table">
                     <tbody>
                     <tr>
                         <th>Cinéma</th>

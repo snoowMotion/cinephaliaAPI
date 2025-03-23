@@ -2,40 +2,13 @@
 
 {% block title %}Nouvelle Salle{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .salle-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .salle-header {
-            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
-            color: #fff;
-            padding: 20px;
-        }
-        .salle-header h1 {
-            margin: 0;
-            font-size: 1.75rem;
-        }
-        .salle-body {
-            padding: 20px;
-        }
-        .btn-back {
-            margin-top: 20px;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
     <div class="container mt-5">
-        <div class="card salle-card">
-            <div class="salle-header">
+        <div class="card employee-card">
+            <div class="employee-header">
                 <h1>Créer une nouvelle Salle</h1>
             </div>
-            <div class="salle-body">
+            <div class="employee-body">
                 {{ include('salle_crud/_form.html.twig', { button_label: 'Enregistrer' }) }}
                 <a href="{{ path('app_salle_crud_index') }}" class="btn btn-secondary btn-back">Retour à la liste</a>
             </div>

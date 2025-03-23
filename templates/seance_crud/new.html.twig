@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Séance{% endblock %}
+
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card employee-card">
+            <div class="employee-header">
+                <h1>Créer une nouvelle Séance</h1>
+            </div>
+            <div class="employee-body">
+                {{ include('seance_crud/_form.html.twig', { button_label: 'Enregistrer' }) }}
+                <a href="{{ path('app_seance_crud_index') }}" class="btn btn-secondary btn-back">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

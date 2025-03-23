@@ -103,3 +103,35 @@ html, body {
 .forgot-password {
     text-align: right;
 }
+
+.employee-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    background-color: #fff;
+}
+.employee-header {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    color: #fff;
+    padding: 20px;
+}
+.employee-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+}
+.employee-body {
+    padding: 20px;
+}
+.-btn-group {
+    margin-top: 20px;
+}
+.btn-group a,
+.btn-group form {
+    display: inline-block;
+    margin-right: 10px;
+}
+.employee-table th {
+    width: 40%;
+    text-align: left;
+}
