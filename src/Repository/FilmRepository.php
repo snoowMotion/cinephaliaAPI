@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Cinema;
 use App\Entity\Film;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,31 @@ class FilmRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Film::class);
+    }
+
+    /**
+     * Permet de récupérer les films par cinéma a venir
+     * @param Cinema  $id  Cinéma dont on souhaite récupérer les films
+     * @return Film[]
+     */
+    public function getFuturFilmByCinema(int $cinemaId): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT DISTINCT f
+        FROM App\Entity\Film f
+        JOIN f.seances s
+        JOIN s.salle sa
+        JOIN sa.cinema c
+        WHERE c.id = :cinemaId
+        AND s.dateDebut > CURRENT_TIMESTAMP()
+        ORDER BY f.titre ASC'
+        );
+
+        $query->setParameter('cinemaId', $cinemaId);
+
+        return $query->getResult();
     }
 
     //    /**

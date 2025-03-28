@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation de Film{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/reservation.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Réservation de Film</h1>
+    <form id="reservationForm" method="post" action="{{ path("reserve") }}">
+        <div class="mb-3">
+            <label for="cinema" class="form-label">Cinéma</label>
+            <select id="cinema" class="form-select" name="cinema">
+                <option value="">Sélectionnez un cinéma</option>
+                {% for cinema in cinemas %}
+                    <option value="{{ cinema.id }}">{{ cinema.ville }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="film" class="form-label">Film</label>
+            <select id="film" class="form-select" disabled name="film">
+                <option value="">Sélectionnez un film</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="seance" class="form-label">Séance</label>
+            <select id="seance" class="form-select" disabled name="seance">
+                <option value="">Sélectionnez une séance</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="nbSieges" class="form-label">Nombre de sièges</label>
+            <span id ="nbPlace">Nombre de place disponible :</span>
+            <input type="number" id="nbSieges" class="form-control" min="1" disabled name="nbSieges">
+        </div>
+        <div class="mb-3">
+            <label for="nbSiegesPMR" class="form-label">Nombre de sièges PMR</label>
+            <span id ="nbPlacePMR">Nombre de place disponible :</span>
+            <input type="number" id="nbSiegesPMR" class="form-control" min="0" disabled name="nbSiegesPMR">
+        </div>
+        <button type="submit" class="btn btn-primary" disabled>Réserver</button>
+    </form>
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            var cinemaId;
+            $('#cinema').change(function() {
+                cinemaId = $(this).val();
+                if (cinemaId) {
+                    $.ajax({
+                        url: '{{ path("getFilmByCinema") }}',
+                        type: 'GET',
+                        data: { cinemaId: cinemaId },
+                        success: function(data) {
+                            $('#film').html('<option value="">Sélectionnez un film</option>');
+                            $.each(data, function(key, film) {
+                                $('#film').append('<option value="' + film.id + '">' + film.titre + '</option>');
+                            });
+                            $('#film').prop('disabled', false);
+                        }
+                    });
+                } else {
+                    $('#film').html('<option value="">Sélectionnez un film</option>').prop('disabled', true);
+                    $('#seance').html('<option value="">Sélectionnez une séance</option>').prop('disabled', true);
+                    $('#nbSieges, #nbSiegesPMR').prop('disabled', true);
+                    $('button[type="submit"]').prop('disabled', true);
+                }
+            });
+
+            $('#film').change(function() {
+                var filmId = $(this).val();
+                if (filmId) {
+                    $.ajax({
+                        url: '{{ path("getSeanceByFilmAndCinema") }}',
+                        type: 'GET',
+                        data: { filmId: filmId, cinemaId: cinemaId },
+                        success: function(data) {
+                            $('#seance').html('<option value="">Sélectionnez une séance</option>');
+                            $.each(data, function(key, seance) {
+                                $('#seance').append('<option data-place = "'+ seance.nbSiege + '" data-place-pmr = "' + seance.nbSiegePmr + '" value="' + seance.id + '">' + seance.dateDebut.date + '</option>');
+
+                            });
+                            $('#seance').prop('disabled', false);
+                        }
+                    });
+                } else {
+                    $('#seance').html('<option value="">Sélectionnez une séance</option>').prop('disabled', true);
+                    $('#nbSieges, #nbSiegesPMR').prop('disabled', true);
+                    $('button[type="submit"]').prop('disabled', true);
+                }
+            });
+
+            $('#seance').change(function() {
+                if ($(this).val()) {
+                    $('#nbSieges, #nbSiegesPMR').prop('disabled', false);
+                    $('button[type="submit"]').prop('disabled', false);
+                    var nbPlace = $(this).find(':selected').data('place');
+                    var nbPlacePMR = $(this).find(':selected').data('place-pmr');
+                    $('#nbPlace').text('Nombre de place disponible : ' + nbPlace);
+                    $('#nbPlacePMR').text('Nombre de place disponible : ' + nbPlacePMR);
+                    $('#nbSieges').attr('max', nbPlace);
+                    $('#nbSiegesPMR').attr('max', nbPlacePMR);
+                } else {
+                    $('#nbSieges, #nbSiegesPMR').prop('disabled', true);
+                    $('button[type="submit"]').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+{% endblock %}
+{% endblock %}

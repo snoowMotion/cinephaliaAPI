@@ -16,6 +16,22 @@ class SiegeRepository extends ServiceEntityRepository
         parent::__construct($registry, Siege::class);
     }
 
+    public function getNbSiegeDispo(int $salleId, $isPmr): int
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('COUNT(s.id)')
+            ->where('s.salle = :salleId')
+            ->andWhere('s.reservation IS NULL')
+            ->setParameter('salleId', $salleId);
+
+            $qb->andWhere('s.isPmr = :isPmr')
+                ->setParameter('isPmr', $isPmr);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+
+
 //    /**
 //     * @return Siege[] Returns an array of Siege objects
 //     */

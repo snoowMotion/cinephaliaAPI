@@ -37,6 +37,21 @@ class SeanceRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
 
+    public function getSeanceByFilmAndCinema(int $filmId, int $cinemaId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.film', 'f')
+            ->join('s.salle', 'sa')
+            ->join('sa.cinema', 'c')
+            ->andWhere('f.id = :filmId')
+            ->andWhere('c.id = :cinemaId')
+            ->setParameter('filmId', $filmId)
+            ->setParameter('cinemaId', $cinemaId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Seance[] Returns an array of Seance objects
 //     */
