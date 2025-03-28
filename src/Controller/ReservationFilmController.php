@@ -101,7 +101,8 @@ class ReservationFilmController extends AbstractController
                 'dateDebut' => $seance->getDateDebut(),
                 'dateFin' => $seance->getDateFin(),
                 'nbSiege' => $nbSiege,
-                'nbSiegePmr' => $nbSiegePmr
+                'nbSiegePmr' => $nbSiegePmr,
+                'qualite' => $seance->getSalle()->getQualite()->getLibelle()
             ];
         }
         return new JsonResponse($ret, Response::HTTP_OK);

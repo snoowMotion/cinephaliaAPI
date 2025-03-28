@@ -84,7 +84,8 @@
                         success: function(data) {
                             $('#seance').html('<option value="">Sélectionnez une séance</option>');
                             $.each(data, function(key, seance) {
-                                $('#seance').append('<option data-place = "'+ seance.nbSiege + '" data-place-pmr = "' + seance.nbSiegePmr + '" value="' + seance.id + '">' + seance.dateDebut.date + '</option>');
+                                console.log(seance)
+                                $('#seance').append('<option data-place = "'+ seance.nbSiege + '" data-place-pmr = "' + seance.nbSiegePmr + '" value="' + seance.id + '">' + seance.dateDebut.date + " Qualité : " + seance.qualite +  '</option>');
 
                             });
                             $('#seance').prop('disabled', false);

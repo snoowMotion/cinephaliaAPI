@@ -43,6 +43,7 @@ class SeanceRepository extends ServiceEntityRepository
             ->join('s.film', 'f')
             ->join('s.salle', 'sa')
             ->join('sa.cinema', 'c')
+            ->join('sa.qualite', 'q')
             ->andWhere('f.id = :filmId')
             ->andWhere('c.id = :cinemaId')
             ->setParameter('filmId', $filmId)
