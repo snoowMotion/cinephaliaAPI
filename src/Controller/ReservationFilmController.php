@@ -156,6 +156,7 @@ class ReservationFilmController extends AbstractController
             }
             $link->setReservation($reservation);
             $entityManager->persist($link);
+            $entityManager->flush();
         }
 
         // Réservation des places PMR
@@ -166,6 +167,7 @@ class ReservationFilmController extends AbstractController
             }
             $link->setReservation($reservation);
             $entityManager->persist($link);
+            $entityManager->flush();
         }
         $entityManager->flush();
         return new JsonResponse(['message' => 'Reservation completed successfully'], Response::HTTP_OK);
