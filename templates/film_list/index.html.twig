@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Films{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/filmList.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        /* Animation de fade-in */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loader caméra */
+        .loader {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .loader i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            color: #FFD700;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+
+        <h1 class="mb-4">Les Films</h1>
+
+        <!-- Zone de filtre -->
+        <div class="row g-3 mb-5">
+
+            <div class="col-md-4">
+                <label for="cinema" class="form-label">Cinéma</label>
+                <select id="cinema" class="form-select">
+                    {% for cinema in cinemas %}
+                        <option value="{{ cinema.id }}">{{ cinema.ville }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="genre" class="form-label">Genre</label>
+                <select id="genre" class="form-select">
+                    {% for genre in genres %}
+                        <option value="{{ genre.id }}">{{ genre.libelle }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="jour" class="form-label">Jour</label>
+                <input type="date" id="jour" class="form-control" />
+            </div>
+
+        </div>
+
+        <!-- Loader -->
+        <div class="loader" id="loader">
+            <i class="bi bi-camera-reels-fill"></i>
+        </div>
+
+        <!-- Zone d'affichage des films -->
+        <div class="row g-4" id="film-list"></div>
+
+    </div>
+
+    <!-- JS -->
+    <script>
+        const url = "{{ path('app_film_list_search') }}";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cinemaSelect = document.getElementById('cinema');
+            const genreSelect = document.getElementById('genre');
+            const jourInput = document.getElementById('jour');
+            const loader = document.getElementById('loader');
+            const filmList = document.getElementById('film-list');
+
+            cinemaSelect.addEventListener('change', handleFilters);
+            genreSelect.addEventListener('change', handleFilters);
+            jourInput.addEventListener('change', handleFilters);
+
+            function handleFilters() {
+                const cinemaId = cinemaSelect.value;
+                const genreId = genreSelect.value;
+                const jour = jourInput.value;
+
+                loader.style.display = 'flex';
+                filmList.innerHTML = '';
+
+                fetch(`${url}?cinema=${cinemaId}&genre=${genreId}&jour=${jour}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loader.style.display = 'none';
+                        if(data.length === 0) {
+                            filmList.innerHTML = `
+        <div class="col-12 text-center mt-5 fade-in">
+            <i class="bi bi-emoji-frown display-4 text-secondary mb-3"></i>
+            <h4>Oups ! Aucun film trouvé...</h4>
+            <p>Essayez d'élargir vos critères de recherche ou revenez plus tard, de nouveaux films arrivent bientôt !</p>
+            <i class="bi bi-film text-warning" style="font-size: 2rem;"></i>
+        </div>
+    `;
+                        } else {
+                            data.forEach(film => {
+                                const filmCard = `
+                               <!-- Dans ta boucle de carte film -->
+<div class="col-md-4 fade-in">
+    <div class="card h-100 shadow rounded-3 position-relative">
+
+        <!-- Coup de coeur -->
+        ${film.coupDeCoeur ? `<span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark d-flex align-items-center"><i class="bi bi-heart-fill me-1"></i> Coup de cœur</span>` : ''}
+
+        <!-- Image -->
+        <img src="/upload/affiche/${film.afficheUrl}" class="card-img-top" alt="${film.titre}">
+
+        <div class="card-body d-flex flex-column">
+
+            <h5 class="card-title">${film.titre}</h5>
+            <p class="card-text">${film.synopsis}</p>
+
+            <!-- Séances -->
+            <div class="mt-3">
+                <h6><i class="bi bi-calendar-event"></i> Séances disponibles :</h6>
+                ${film.seances.map(seance => `
+                    <div class="border p-2 rounded mb-2 bg-light text-dark">
+                       <div>
+    <i class="bi bi-clock"></i>
+    ${seance.dateDebut.date.split(' ')[0]}
+    de ${seance.dateDebut.date.split(' ')[1].substring(0,5)}
+    à ${seance.dateFin.date.split(' ')[1].substring(0,5)}
+</div>
+                        <div><i class="bi bi-camera-reels"></i> Qualité : ${seance.qualite.libelle}</div>
+                        <div><i class="bi bi-cash-coin"></i> Prix : ${seance.qualite.prix} €</div>
+                        <a href="/reservation/film?cinemaId=${cinemaId}&filmId=${film.id}&seanceId=${seance.id}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                            Réserver
+                        </a>
+                    </div>
+                `).join('')}
+            </div>
+
+        </div>
+    </div>
+</div>`;
+                                filmList.insertAdjacentHTML('beforeend', filmCard);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        loader.style.display = 'none';
+                        console.error('Error:', error);
+                    });
+            }
+
+            // Lancer le filtre au démarrage de la page
+            handleFilters();
+        });
+    </script>
+{% endblock %}

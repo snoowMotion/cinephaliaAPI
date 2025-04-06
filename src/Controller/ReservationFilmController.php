@@ -23,13 +23,17 @@ class ReservationFilmController extends AbstractController
 {
     #[Route('/reservation/film', name: 'app_reservation_film')]
     #[IsGranted('ROLE_USER')]
-    public function index(CinemaRepository $cinemaRepository): Response
+    public function index(CinemaRepository $cinemaRepository, Request $request): Response
     {
-        //On récupère la liste des cinemas
-        $cinemas = $cinemaRepository->findAll();
+        // Lecture des valeurs envoyées par POST ou GET
+        $cinemaId = $request->get('cinemaId');
+        $filmId = $request->get('filmId');
+        $seanceId = $request->get('seanceId');
         return $this->render('reservation_film/index.html.twig', [
-            'controller_name' => 'ReservationFilmController',
-            'cinemas' => $cinemas
+            'cinemas' => $cinemaRepository->findAll(),
+            'cinemaId' => $cinemaId,
+            'filmId' => $filmId,
+            'seanceId' => $seanceId
         ]);
     }
 
@@ -93,16 +97,16 @@ class ReservationFilmController extends AbstractController
         $ret = [];
         foreach ($seances as $seance){
             //On récupère le nombre de siège disponible
-            $nbSiege = $siegeRepository->getNbPlaceDisponible($seance->getId(), false);
-            $nbSiegePmr = $siegeRepository->getNbPlaceDisponible($seance->getId(), true);
+            $nbSiege = $siegeRepository->getNbPlaceDisponible($seance[0]->getId(), false);
+            $nbSiegePmr = $siegeRepository->getNbPlaceDisponible($seance[0]->getId(), true);
 
             $ret[] = [
-                'id' => $seance->getId(),
-                'dateDebut' => $seance->getDateDebut(),
-                'dateFin' => $seance->getDateFin(),
+                'id' => $seance[0]->getId(),
+                'dateDebut' => $seance[0]->getDateDebut(),
+                'dateFin' => $seance[0]->getDateFin(),
                 'nbSiege' => $nbSiege,
                 'nbSiegePmr' => $nbSiegePmr,
-                'qualite' => $seance->getSalle()->getQualite()->getLibelle()
+                'qualite' => $seance[0]->getSalle()->getQualite()->getLibelle()
             ];
         }
         return new JsonResponse($ret, Response::HTTP_OK);

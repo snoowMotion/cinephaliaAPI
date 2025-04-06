@@ -48,6 +48,7 @@ class SeanceRepository extends ServiceEntityRepository
             ->andWhere('c.id = :cinemaId')
             ->setParameter('filmId', $filmId)
             ->setParameter('cinemaId', $cinemaId)
+            ->select('s, q.libelle, q.prix')
             ->getQuery()
             ->getResult()
         ;

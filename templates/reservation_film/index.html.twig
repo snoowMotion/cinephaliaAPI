@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/reservation.css') }}" />
+
 {% endblock %}
 
 {% block body %}
@@ -48,8 +48,13 @@
 
 {% block javascripts %}
     {{ parent() }}
+
     <script>
+
         $(document).ready(function() {
+            const selectedCinema = "{{ cinemaId|default('') }}";
+            const selectedFilm = "{{ filmId|default('') }}";
+            const selectedSeance = "{{ seanceId|default('') }}";
             var cinemaId;
             $('#cinema').change(function() {
                 cinemaId = $(this).val();
@@ -64,6 +69,9 @@
                                 $('#film').append('<option value="' + film.id + '">' + film.titre + '</option>');
                             });
                             $('#film').prop('disabled', false);
+                            if (selectedFilm) {
+                                $('#film').val(selectedFilm).trigger('change');
+                            }
                         }
                     });
                 } else {
@@ -89,6 +97,9 @@
 
                             });
                             $('#seance').prop('disabled', false);
+                            if (selectedSeance) {
+                                $('#seance').val(selectedSeance).trigger('change');
+                            }
                         }
                     });
                 } else {
@@ -113,6 +124,12 @@
                     $('button[type="submit"]').prop('disabled', true);
                 }
             });
+
+            if (selectedCinema) {
+                $('#cinema').val(selectedCinema).trigger('change');
+            }
+
+
         });
     </script>
 {% endblock %}

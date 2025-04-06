@@ -42,6 +42,34 @@ class FilmRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function findFiltered(?int $cinemaId, ?int $genreId, ?string $jour): array
+    {
+        $qb = $this->createQueryBuilder('f')
+            ->join('f.seances', 's')
+            ->join('f.genre', 'g')
+            ->join('s.salle', 'sa')
+            ->join('sa.cinema', 'c')
+            ->groupBy('f.id');
+
+        if ($cinemaId) {
+            $qb->andWhere('c.id = :cinemaId')
+                ->setParameter('cinemaId', $cinemaId);
+        }
+
+        if ($genreId) {
+            $qb->andWhere('g.id = :genreId')
+                ->setParameter('genreId', $genreId);
+        }
+
+        if ($jour) {
+            $date = new \DateTimeImmutable($jour);
+            $qb->andWhere('DATE(s.dateHeureDebut) = :jour')
+                ->setParameter('jour', $date->format('Y-m-d'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Film[] Returns an array of Film objects
     //     */
