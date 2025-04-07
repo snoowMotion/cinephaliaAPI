@@ -66,7 +66,8 @@ class FilmRepository extends ServiceEntityRepository
             $qb->andWhere('DATE(s.dateHeureDebut) = :jour')
                 ->setParameter('jour', $date->format('Y-m-d'));
         }
-
+        $qb->andWhere('s.dateDebut > CURRENT_TIMESTAMP()')
+            ->orderBy('f.titre', 'ASC');
         return $qb->getQuery()->getResult();
     }
 
