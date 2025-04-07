@@ -16,13 +16,22 @@
             <div class="col-1 d-flex align-items-start">
                 <img src="{{ asset('/images/logo.png') }}" alt="Logo du site" class="logo" />
             </div>
-            <div class="col-11 d-flex align-items-center justify-content-end gx-5">
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                {% else %}
-                {% endif %}
-                    <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-            </div>
+        <div class="col-11 d-flex align-items-center justify-content-end gx-5">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a class="nav-link btn btn-outline-success me-2" href="{{ path('app_logout') }}">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            {% else %}
+                <a class="nav-link btn btn-outline-success me-2" href="{{ path('app_login') }}">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </a>
+            {% endif %}
+            {% if is_granted('ROLE_USER') %}
+                <a class="nav-link btn btn-outline-info" href="{{ path('app_my_space') }}">
+                    <i class="fas fa-user"></i> Mon espace
+                </a>
+            {% endif %}
+        </div>
         </div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid justify-content-center">
@@ -31,10 +40,10 @@
                         <a class="nav-link" href="{{ path("app_home") }}">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Réservation</a>
+                        <a class="nav-link" href="{{ path("app_reservation_film") }}">Réservation</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Films</a>
+                        <a class="nav-link" href="{{ path("app_film_list") }}">Films</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>
