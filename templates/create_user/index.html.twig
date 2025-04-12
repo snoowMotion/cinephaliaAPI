@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création de compte{% endblock %}
+
+{% block body %}
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="p-4 shadow border rounded bg-light">
+                <h2 class="form-title text-center mb-4 text-primary">Créer un compte</h2>
+                <form action="/register" method="POST" id="registerForm">
+                    <div class="mb-3">
+                        <label for="login" class="form-label fw-bold">Adresse email</label>
+                        <input type="email" name="login" id="login" class="form-control border-primary" placeholder="Entrez votre email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-bold">Mot de passe</label>
+                        <input type="password" name="password" id="password" class="form-control border-primary" placeholder="Entrez un mot de passe sécurisé" required>
+                        <div class="form-text text-muted">
+                            Minimum 8 caractères, avec une majuscule, une minuscule, un chiffre et un caractère spécial.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label fw-bold">Confirmez le mot de passe</label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control border-primary" placeholder="Confirmez votre mot de passe" required>
+                        <div id="passwordError" class="form-text text-danger d-none">Les mots de passe ne correspondent pas.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="prenom" class="form-label fw-bold">Prénom</label>
+                        <input type="text" name="prenom" id="prenom" class="form-control border-primary" placeholder="Entrez votre prénom" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nom" class="form-label fw-bold">Nom</label>
+                        <input type="text" name="nom" id="nom" class="form-control border-primary" placeholder="Entrez votre nom" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg mt-3">Créer mon compte</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('#registerForm').on('submit', function (e) {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    $('#passwordError').removeClass('d-none');
+                } else {
+                    $('#passwordError').addClass('d-none');
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
