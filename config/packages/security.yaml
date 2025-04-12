@@ -23,7 +23,7 @@ security:
 
             logout:
                 path: app_logout
-                target: home
+                target: app_home
 
             remember_me:
                 secret: '%env(APP_SECRET)%'
@@ -45,4 +45,6 @@ security:
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/home, roles: PUBLIC_ACCESS }
+        - { path : ^/filmVisiteur/list, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY } # ou ajusté selon tes besoins
