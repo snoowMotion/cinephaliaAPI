@@ -6,9 +6,10 @@
         <link rel="stylesheet" href="{{ asset('css/login.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
         {% block stylesheets %}{% endblock %}
         <script src="{{ asset('scripts/jquery-3.7.1.min.js') }}"></script>
-        <script src="{{ asset('bootstrap-5.3.3-dist/js/bootstrap.js') }}"></script>
+        <script src="{{ asset('bootstrap-5.3.3-dist/js/bootstrap.bundle.js') }}"></script>
         {% block javascripts %}{% endblock %}
     </head>
     <body>
@@ -16,67 +17,56 @@
             <div class="col-1 d-flex align-items-start">
                 <img src="{{ asset('/images/logo.png') }}" alt="Logo du site" class="logo" />
             </div>
-        <div class="col-11 d-flex align-items-center justify-content-end gx-5">
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a class="nav-link btn btn-outline-success me-2" href="{{ path('app_logout') }}">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
-                </a>
-            {% else %}
-                <a class="nav-link btn btn-outline-success me-2" href="{{ path('app_login') }}">
-                    <i class="fas fa-sign-in-alt"></i> Connexion
-                </a>
-            {% endif %}
-            {% if is_granted('ROLE_USER') %}
-                <a class="nav-link btn btn-outline-info" href="{{ path('app_my_space') }}">
-                    <i class="fas fa-user"></i> Mon espace
-                </a>
-            {% endif %}
         </div>
-        </div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid justify-content-center">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path("app_home") }}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path("app_reservation_film") }}">Réservation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path("app_film_list") }}">Films</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="accordion" id="employeeMenu">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button nav-link btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Employé
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#employeeMenu">
-                                    <div class="accordion-body">
-                                        <ul class="navbar-nav">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="{{ path('app_film_index') }}">Films</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="{{ path('app_salle_crud_index') }}">Salles</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="{{ path("app_seance_crud_index") }}">Séances</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow">
+            <div class="container-fluid px-4">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_home') }}">Accueil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_reservation_film') }}">Réservation</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_film_list') }}">Films</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="employeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-tools me-1"></i> Employé
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark animate__animated animate__fadeIn" aria-labelledby="employeDropdown">
+                                    <li><a class="dropdown-item" href="{{ path('app_film_index') }}">Films</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_salle_crud_index') }}">Salles</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_seance_crud_index') }}">Séances</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        {% if is_granted('ROLE_USER') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_my_space') }}"><i class="fas fa-user-circle"></i> Mon espace</a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link text-success" href="{{ path('app_login') }}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </nav>
+
         {% block body %}{% endblock %}
         <footer class="footer bg-light text-dark py-4">
             <div class="container">
