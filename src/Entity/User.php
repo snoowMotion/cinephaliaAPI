@@ -74,6 +74,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
     private Collection $avis;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_confirmed = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $confirmation_token = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -221,6 +227,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $avi->setUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isConfirmed(): ?bool
+    {
+        return $this->is_confirmed;
+    }
+
+    public function setConfirmed(?bool $is_confirmed): static
+    {
+        $this->is_confirmed = $is_confirmed;
+
+        return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmation_token;
+    }
+
+    public function setConfirmationToken(?string $confirmation_token): static
+    {
+        $this->confirmation_token = $confirmation_token;
 
         return $this;
     }
