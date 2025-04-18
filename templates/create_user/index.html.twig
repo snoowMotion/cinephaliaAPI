@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="p-4 shadow border rounded bg-light">
                 <h2 class="form-title text-center mb-4 text-primary">Créer un compte</h2>
-                <form action="/register" method="POST" id="registerForm">
+                <form action="{{ path("app_create_user_register") }}" method="POST" id="registerForm">
                     <div class="mb-3">
                         <label for="login" class="form-label fw-bold">Adresse email</label>
                         <input type="email" name="login" id="login" class="form-control border-primary" placeholder="Entrez votre email" required>
@@ -45,19 +45,50 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        $(document).ready(function () {
-            $('#registerForm').on('submit', function (e) {
-                const password = $('#password').val();
-                const confirmPassword = $('#confirmPassword').val();
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("registerForm");
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const password = document.getElementById("password").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
 
                 if (password !== confirmPassword) {
-                    e.preventDefault();
-                    $('#passwordError').removeClass('d-none');
+                    document.getElementById("passwordError").classList.remove("d-none");
+                    return;
                 } else {
-                    $('#passwordError').addClass('d-none');
+                    document.getElementById("passwordError").classList.add("d-none");
+                }
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch("{{ path('app_create_user_register') }}", {
+                        method: "POST",
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        console.log(response);
+                        alert("Compte créé avec succès !");
+                        form.reset();
+                    } else {
+                        alert(result.message || "Une erreur est survenue.");
+                    }
+
+                } catch (error) {
+                    console.error("Erreur AJAX:", error);
+                    alert("Erreur lors de la communication avec le serveur.");
                 }
             });
         });
     </script>
-
 {% endblock %}
