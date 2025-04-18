@@ -29,7 +29,7 @@ class AdminController extends AbstractController
             $user->setPassword($hasher->hashPassword($user, $password));
 
             // Récupère ou assigne le rôle EMPLOYE
-            $roleEmploye = $em->getRepository(Role::class)->findOneBy(['label' => 'employé']);
+            $roleEmploye = $em->getRepository(Role::class)->findOneBy(['libelle' => 'ROLE_EMPLOYE']);
             if ($roleEmploye) {
                 $user->addRole($roleEmploye);
             }
