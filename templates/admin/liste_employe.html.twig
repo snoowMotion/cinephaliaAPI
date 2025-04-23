@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des employés{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm rounded-4 border-0">
+        <div class="card-body">
+            <h2 class="mb-4 text-center">👥 Liste des comptes employés</h2>
+            <a href="{{ path('admin_employe_ajouter') }}" class="btn btn-success btn-lg rounded-3 shadow-sm">
+                ➕ Ajouter un employé
+            </a>
+            {% if employes is empty %}
+            <div class="alert alert-info text-center">
+                Aucun employé enregistré pour le moment.
+            </div>
+            {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for employe in employes %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ employe.nom }}</td>
+                        <td>{{ employe.prenom }}</td>
+                        <td>{{ employe.email }}</td>
+                        <td>
+                            <a href="{{ path('admin_employe_modifier', { id: employe.id }) }}" class="btn btn-sm btn-outline-primary">
+                                ✏️ Modifier
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

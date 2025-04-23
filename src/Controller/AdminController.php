@@ -45,4 +45,46 @@ class AdminController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+    /**
+     * Affiche la liste des employés
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/admin/employes', name: 'admin_employes')]
+    public function listeEmployes(EntityManagerInterface $em): Response
+    {
+        $employes =$em->getRepository(User::class)->createQueryBuilder('u')
+            ->join('u.roles', 'r')
+            ->where('r.libelle = :role')
+            ->setParameter('role', 'ROLE_EMPLOYE')
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('admin/liste_employe.html.twig', [
+            'employes' => $employes
+        ]);
+    }
+
+    #[Route('/admin/employe/modifier/{id}', name: 'admin_employe_modifier')]
+    public function modifierEmploye(User $employe, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    {
+        $form = $this->createForm(EmployeType::class, $employe);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('password')->getData();
+            if ($plainPassword) {
+                $employe->setPassword($hasher->hashPassword($employe, $plainPassword));
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Compte employé modifié avec succès.');
+            return $this->redirectToRoute('admin_employes');
+        }
+
+        return $this->render('admin/ajout_employe.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }
