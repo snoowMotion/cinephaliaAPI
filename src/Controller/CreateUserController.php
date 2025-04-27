@@ -6,12 +6,14 @@ use App\Entity\User;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Service\AccountConfirmationMailer;
+use App\Service\MailingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CreateUserController extends AbstractController
 {
@@ -32,7 +34,7 @@ class CreateUserController extends AbstractController
      * @return Response
      */
     #[Route('/create/user/register', name: 'app_create_user_register')]
-    public function register(Request $req, UserRepository $userRepo, RoleRepository $roleRepository, EntityManagerInterface $em, AccountConfirmationMailer $mailer): Response
+    public function register(Request $req, UserRepository $userRepo, RoleRepository $roleRepository, EntityManagerInterface $em, MailingService $mailer): Response
     {
         $data = json_decode($req->getContent(), true);
         // Récupération des différents attributs du formulaire
@@ -90,10 +92,13 @@ class CreateUserController extends AbstractController
         $em->persist($user);
         $em->flush();
         // On envoie un mail de confirmation
-        $mailer->sendConfirmationEmail($user);
+        $mail = $mailer->sendConfirmationEmail($user, $this->generateUrl('app_confirm_user', [
+            'token' => $user->getConfirmationToken()
+        ], UrlGeneratorInterface::ABSOLUTE_URL));
         return new JsonResponse([
             'status' => 200,
-            'message' => 'Utilisateur créé avec succès'
+            'message' => 'Utilisateur créé avec succès',
+            'mail' => $mail
         ]);
     }
 

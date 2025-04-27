@@ -7,6 +7,7 @@ parameters:
 
 # config/services.yaml
 services:
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -28,6 +29,12 @@ services:
             $entityManager: '@doctrine.orm.entity_manager'
         tags:
             - { name: serializer.normalizer }
+    App\Service\MailingService:
+        arguments:
+            $apiKey: '%env(MAILJET_API_KEY)%'
+            $apiSecret: '%env(MAILJET_API_SECRET)%'
+            $fromEmail: '%env(MAILJET_FROM_EMAIL)%'
+            $fromName: '%env(MAILJET_FROM_NAME)%'
 
     App\DataTransformer\UserInputDataTransformer:
         arguments:

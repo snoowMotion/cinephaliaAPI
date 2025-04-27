@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Form\EmployeType;
+use App\Service\MailingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdminController extends AbstractController
 {
@@ -18,7 +20,8 @@ class AdminController extends AbstractController
     public function ajouterEmploye(
         Request $request,
         EntityManagerInterface $em,
-        UserPasswordHasherInterface $hasher
+        UserPasswordHasherInterface $hasher,
+        MailingService $mailer
     ): Response {
         $user = new User();
         $form = $this->createForm(EmployeType::class, $user);
@@ -36,7 +39,11 @@ class AdminController extends AbstractController
 
             $em->persist($user);
             $em->flush();
-
+            // Envoi de l'email de confirmation
+            // On envoie un mail de confirmation
+            $mail = $mailer->sendConfirmationEmail($user, $this->generateUrl('app_confirm_user', [
+                'token' => $user->getConfirmationToken()
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
             $this->addFlash('success', 'Employé ajouté avec succès !');
             return $this->redirectToRoute('admin_employe_ajouter');
         }
