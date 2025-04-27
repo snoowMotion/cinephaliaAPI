@@ -80,6 +80,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $confirmation_token = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $must_change_password = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -251,6 +254,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setConfirmationToken(?string $confirmation_token): static
     {
         $this->confirmation_token = $confirmation_token;
+
+        return $this;
+    }
+
+    public function isMustChangePassword(): ?bool
+    {
+        return $this->must_change_password;
+    }
+
+    public function setMustChangePassword(?bool $must_change_password): static
+    {
+        $this->must_change_password = $must_change_password;
 
         return $this;
     }
