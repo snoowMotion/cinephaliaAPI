@@ -64,4 +64,23 @@ class MailingService
             $content
         );
     }
+
+    public function sendForgetPassword(User $user, string $newPassword)
+    {
+        $subject = 'Réinitialisation de votre mot de passe';
+
+        $content = "
+            <h2>Bonjour {$user->getPrenom()},</h2>
+            <p>Votre mot de passe a été réinitialisé. Voici votre nouveau mot de passe :</p>
+            <p><strong>{$newPassword}</strong></p>
+            <p>Merci de le changer dès votre prochaine connexion.</p>
+        ";
+
+        return $this->sendEmail(
+            $user->getEmail(),
+            $user->getPrenom(),
+            $subject,
+            $content
+        );
+    }
 }

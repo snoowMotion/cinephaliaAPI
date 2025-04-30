@@ -46,6 +46,7 @@ security:
         - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [POST] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/home, roles: PUBLIC_ACCESS }
+        - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
         - { path : ^/filmVisiteur/list, roles: PUBLIC_ACCESS }
         - { path : ^/create/user, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY } # ou ajusté selon tes besoins
