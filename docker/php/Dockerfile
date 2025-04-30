@@ -1,8 +1,8 @@
 FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    git unzip curl libpq-dev libxml2-dev libonig-dev \
+    && docker-php-ext-install pdo pdo_pgsql xml
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
