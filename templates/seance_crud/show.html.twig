@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Séance{% endblock %}
+
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card employee-card">
+            <div class="employee-header">
+                <h1>Détails de la Séance</h1>
+            </div>
+            <div class="employee-body">
+                <table class="table employee-table">
+                    <tbody>
+                    <tr>
+                        <th>Cinéma</th>
+                        <td>{{ seance.salle.cinema.ville }}</td>
+                    <tr>
+                    <tr>
+                        <th>Numéro de Salle</th>
+                        <td>{{ seance.salle.numSalle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Film</th>
+                        <td>{{ seance.film.titre }}</td>
+                    </tr>
+                        <th>Date de début</th>
+                        <td>{{ seance.dateDebut ? seance.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de fin</th>
+                        <td>{{ seance.dateFin ? seance.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="btn-group">
+                    <a href="{{ path('app_seance_crud_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                    <a href="{{ path('app_seance_crud_edit', {'id': seance.id}) }}" class="btn btn-primary">Modifier</a>
+                    {{ include('seance_crud/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

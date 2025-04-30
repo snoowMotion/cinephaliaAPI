@@ -8,3 +8,33 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+.env
+.env.dev
+composer.lock
+symfony.lock
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+.phpunit.cache
+bin/phpunit
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+tests/bootstrap.php
+.env.test
+grumphp.yml
+phpstan.dist.neon
+phpunit.xml.dist
+public/upload

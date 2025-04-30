@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +13,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 #[ORM\Table(name: 'role', schema: 'cinephaliaapi')]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
+    ],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
+)]
 class Role
 {
     #[ORM\Id]
@@ -22,7 +32,7 @@ class Role
     private ?string $libelle = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'roles')]
-    private ArrayCollection $users;
+    private Collection $users;
 
     public function __construct()
     {

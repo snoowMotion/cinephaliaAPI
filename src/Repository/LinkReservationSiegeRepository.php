@@ -16,6 +16,35 @@ class LinkReservationSiegeRepository extends ServiceEntityRepository
         parent::__construct($registry, LinkReservationSiege::class);
     }
 
+    public function getFirstPlace(int $seanceId, bool $isPmr): ?LinkReservationSiege
+    {
+        return $this->createQueryBuilder('lrs')
+            ->join('lrs.siege', 'si')
+            ->where('lrs.seance = :seanceId')
+            ->andWhere('si.isPMR = :isPmr')
+            ->andWhere('lrs.reservation IS NULL')
+            ->setParameter('seanceId', $seanceId)
+            ->setParameter('isPmr', $isPmr)
+            ->orderBy('lrs.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function getNbPlaceDisponible(int $seanceId, bool $isPmr): int
+    {
+        return $this->createQueryBuilder('lrs')
+            ->select('COUNT(lrs)')
+            ->join('lrs.siege', 'si')
+            ->where('lrs.seance = :seanceId')
+            ->andWhere('si.isPMR = :isPmr')
+            ->andWhere('lrs.reservation IS NULL')
+            ->setParameter('seanceId', $seanceId)
+            ->setParameter('isPmr', $isPmr)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return LinkReservationSiege[] Returns an array of LinkReservationSiege objects
     //     */

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edition de salle{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-5">
+        <div class="card employee-card">
+            <div class="employee-header">
+                <h1>Edition d'une nouvelle Salle</h1>
+            </div>
+            <div class="employee-body">
+                {{ include('salle_crud/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                <a href="{{ path('app_salle_crud_index') }}" class="btn btn-secondary btn-back">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la Séance{% endblock %}
+
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card employee-card">
+            <div class="employee-header">
+                <h1>Modifier la Séance</h1>
+            </div>
+            <div class="employee-body">
+                {{ include('seance_crud/_form.html.twig', { button_label: 'Mettre à jour' }) }}
+                <div class="btn-group">
+                    <a href="{{ path('app_seance_crud_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                    {{ include('seance_crud/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

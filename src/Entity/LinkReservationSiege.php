@@ -3,12 +3,22 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\LinkReservationSiegeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LinkReservationSiegeRepository::class)]
 #[ORM\Table(name: 'link_reservation_siege', schema: 'cinephaliaapi')]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
+    ],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
+)]
 class LinkReservationSiege
 {
     #[ORM\Id]
@@ -17,12 +27,15 @@ class LinkReservationSiege
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Reservation $reservation = null;
 
     #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Siege $siege = null;
+
+    #[ORM\ManyToOne(inversedBy: 'linkReservationSieges')]
+    private ?Seance $seance = null;
 
     public function getId(): ?int
     {
@@ -49,6 +62,18 @@ class LinkReservationSiege
     public function setSiege(?Siege $siege): static
     {
         $this->siege = $siege;
+
+        return $this;
+    }
+
+    public function getSeance(): ?Seance
+    {
+        return $this->seance;
+    }
+
+    public function setSeance(?Seance $seance): static
+    {
+        $this->seance = $seance;
 
         return $this;
     }

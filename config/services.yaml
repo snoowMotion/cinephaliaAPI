@@ -5,7 +5,9 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
+# config/services.yaml
 services:
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -19,6 +21,47 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Controller\ReservationController:
+        tags: [ 'controller.service_arguments' ]
 
+    App\DataTransformer\RoleDataTransformer:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: serializer.normalizer }
+    App\Service\MailingService:
+        arguments:
+            $apiKey: '%env(MAILJET_API_KEY)%'
+            $apiSecret: '%env(MAILJET_API_SECRET)%'
+            $fromEmail: '%env(MAILJET_FROM_EMAIL)%'
+            $fromName: '%env(MAILJET_FROM_NAME)%'
+
+    App\DataTransformer\UserInputDataTransformer:
+        arguments:
+            $passwordHasher: '@security.password_hasher'
+            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: serializer.normalizer }
+    App\EventListener\ForcePasswordChangeListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.login_success', method: 'onLoginSuccess' }
+    App\EventListener\JWTCreatedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'lexik_jwt_authentication.on_jwt_created', method: 'onJWTCreated' }
+
+    # Controllers are usually registered automatically, but you can explicitly register them if needed
+    App\Controller\SalleController:
+        tags: [ 'controller.service_arguments' ]
+
+
+    App\DataPersister\FilmInputDataTransformer:
+        tags: [ 'api_platform.processor' ]
+
+    App\DataPersister\FilmDataPersister:
+        tags: [ 'api_platform.processor' ]
+
+    # Explicitly register the FilmPutController
+    App\Controller\FilmPutController:
+        tags: [ 'controller.service_arguments' ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

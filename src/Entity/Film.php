@@ -3,37 +3,67 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\FilmController;
+use App\Controller\FilmPutController;
+use App\DataPersister\FilmInputDataTransformer;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 #[ORM\Table(name: 'film', schema: 'cinephaliaapi')]
-#[ApiResource]
+
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')",
+        ),
+        new Put(
+            security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')",
+        )
+    ],
+    normalizationContext: ['groups' => ['film:read', 'film:write']],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
+)]
 class Film
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['film:read', 'film:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $titre = '';
 
     #[ORM\Column(length: 2500, options: ['default' => ''])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $synopsis = '';
 
     #[ORM\Column(length: 255, options: ['default' => ''])]
+    #[Groups(['film:read', 'film:write'])]
     private ?string $afficheUrl = '';
 
     #[ORM\Column(options: ['default' => 0])]
+    #[Groups(['film:read', 'film:write'])]
     private ?int $ageMini = 0;
 
-    #[ORM\Column(length: 255, options: ['default' => ''])]
-    private ?string $label = '';
+    #[ORM\Column()]
+    #[Groups(['film:read', 'film:write'])]
+    private ?bool $label;
 
     #[ORM\ManyToOne(inversedBy: 'films')]
+    #[Groups(['film:read', 'film:write'])]
     private ?Genre $genre = null;
 
     /**
@@ -100,12 +130,12 @@ class Film
         return $this;
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): ?bool
     {
         return $this->label;
     }
 
-    public function setLabel(string $label): static
+    public function setLabel(bool $label): static
     {
         $this->label = $label;
 

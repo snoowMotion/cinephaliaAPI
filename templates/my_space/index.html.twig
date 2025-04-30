@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon espace - Cinéphoria{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">🎟️ Mes réservations</h2>
+
+        {% if reservations is empty %}
+            <div class="alert alert-info">Vous n'avez encore effectué aucune réservation.</div>
+        {% else %}
+            <div class="row">
+                {% for reservation in reservations %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ reservation.film }}</h5>
+                                <p class="card-text">
+                                    📅 Séance : {{ reservation.seance|date('d/m/Y H:i') }}<br>
+                                    🛋️ Salle : {{ reservation.numSalle }}<br>
+                                    🎞️ Qualité : {{ reservation.qualite }}<br>
+                                    🪑 Sièges :
+                                    {% for ls in reservation.sieges %}
+                                        {{ ls.siege.numero }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    <br>💰 Prix total : {{ reservation.prix }} €
+                                </p>
+
+                                {% if reservation.seance < "now"|date("Y-m-d H:i:s") and reservation.avis|length == 0 %}
+                                    <hr>
+                                    <form method="post" action="{{ path('noter_reservation', { id: reservation.id }) }}">
+                                        <div class="mb-2">
+                                            <label for="note-{{ reservation.id }}" class="form-label">Note (sur 5)</label>
+                                            <select name="note" id="note-{{ reservation.id }}" class="form-select" required>
+                                                {% for i in 1..5 %}
+                                                    <option value="{{ i }}">{{ i }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="commentaire-{{ reservation.id }}" class="form-label">Votre avis</label>
+                                            <textarea name="commentaire" id="commentaire-{{ reservation.id }}" class="form-control" rows="3" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">Soumettre mon avis</button>
+                                    </form>
+                                {% elseif reservation.avis|length > 0 %}
+                                    <div class="alert alert-success mt-3">
+                                        ✅ Vous avez déjà noté ce film. Merci !
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -16,6 +16,46 @@ class SeanceRepository extends ServiceEntityRepository
         parent::__construct($registry, Seance::class);
     }
 
+    /**
+     * Check if there is already a session of the same film during the time interval
+     * @param int $filmId ID of the film
+     * @param \DateTimeInterface $dateDebut Start date and time
+     * @param \DateTimeInterface $dateFin End date and time
+     * @return bool
+     */
+    public function isSeanceExists(int $filmId, \DateTimeInterface $dateDebut, \DateTimeInterface $dateFin): bool
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('COUNT(s.id)')
+            ->where('s.film = :filmId')
+            ->andWhere('s.dateDebut < :dateFin')
+            ->andWhere('s.dateFin > :dateDebut')
+            ->setParameter('filmId', $filmId)
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin);
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    public function getSeanceByFilmAndCinema(int $filmId, int $cinemaId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.film', 'f')
+            ->join('s.salle', 'sa')
+            ->join('sa.cinema', 'c')
+            ->join('sa.qualite', 'q')
+            ->andWhere('f.id = :filmId')
+            ->andWhere('c.id = :cinemaId')
+            ->andWhere('s.dateDebut > :now')
+            ->setParameter('filmId', $filmId)
+            ->setParameter('cinemaId', $cinemaId)
+            ->setParameter('now', new \DateTime())
+            ->select('s, q.libelle, q.prix')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Seance[] Returns an array of Seance objects
 //     */

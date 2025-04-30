@@ -3,14 +3,25 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\GenreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
 #[ORM\Table(name: 'genre', schema: 'cinephaliaapi')]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(security: "is_granted('ROLE_API_ECRITURE') or is_granted('ROLE_ADMIN')")
+    ],
+    security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_API_LECTURE')"
+)]
 class Genre
 {
     #[ORM\Id]
@@ -32,11 +43,13 @@ class Genre
         $this->films = new ArrayCollection();
     }
 
+    #[Groups(['film:read'])]
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    #[Groups(['film:read'])]
     public function getLibelle(): ?string
     {
         return $this->libelle;

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Film{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('scripts/filmAdmin/new.js') }}"></script>
+{% endblock %}
+{% block body %}
+    <h1>Edition</h1>
+
+    {{ include('film/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-info btn-lg mt-3" href="{{ path('app_film_index') }}">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
+
+    {{ include('film/_delete_form.html.twig') }}
+{% endblock %}

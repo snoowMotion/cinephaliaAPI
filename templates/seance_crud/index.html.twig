@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Seance index{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Gestion des séances</h1>
+
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Cinéma</th>
+                <th>Numéro de Salle</th>
+                <th>Film</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for seance in seances %}
+            <tr>
+                <td>{{ seance.salle.cinema.ville }}</td>
+                <td>{{ seance.salle.numSalle }}</td>
+                <td>{{ seance.film.titre }}</td>
+                <td>{{ seance.dateDebut ? seance.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ seance.dateFin ? seance.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_seance_crud_show', {'id': seance.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
+                    <a href="{{ path('app_seance_crud_edit', {'id': seance.id}) }}"class="btn btn-warning btn-sm">Editer</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune séance</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('app_seance_crud_new') }}">Créer une nouvelle séance</a>
+</div>
+{% endblock %}

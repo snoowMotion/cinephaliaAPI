@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\SeanceController;
 use App\Repository\SeanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +15,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
 #[ORM\Table(name: 'seance', schema: 'cinephaliaapi')]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            uriTemplate: '/api/seances',
+            controller: SeanceController::class,
+            name: 'create_seance',
+        )
+    ],
+)]
 class Seance
 {
     #[ORM\Id]
@@ -39,9 +53,16 @@ class Seance
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'seance')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, LinkReservationSiege>
+     */
+    #[ORM\OneToMany(targetEntity: LinkReservationSiege::class, mappedBy: 'seance')]
+    private Collection $linkReservationSieges;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->linkReservationSieges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,6 +142,36 @@ class Seance
             // set the owning side to null (unless already changed)
             if ($reservation->getSeance() === $this) {
                 $reservation->setSeance(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LinkReservationSiege>
+     */
+    public function getLinkReservationSieges(): Collection
+    {
+        return $this->linkReservationSieges;
+    }
+
+    public function addLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if (!$this->linkReservationSieges->contains($linkReservationSiege)) {
+            $this->linkReservationSieges->add($linkReservationSiege);
+            $linkReservationSiege->setSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLinkReservationSiege(LinkReservationSiege $linkReservationSiege): static
+    {
+        if ($this->linkReservationSieges->removeElement($linkReservationSiege)) {
+            // set the owning side to null (unless already changed)
+            if ($linkReservationSiege->getSeance() === $this) {
+                $linkReservationSiege->setSeance(null);
             }
         }
 
