@@ -3,7 +3,7 @@ version: '3.8'
 services:
   php:
     build:
-      context: ..
+      context: .
       dockerfile: docker/php/Dockerfile
     container_name: cinephalia_php
     working_dir: /var/www/html
