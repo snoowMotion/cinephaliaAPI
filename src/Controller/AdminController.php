@@ -36,7 +36,9 @@ class AdminController extends AbstractController
             if ($roleEmploye) {
                 $user->addRole($roleEmploye);
             }
-
+            // Génération du token de confirmation
+            $user->setConfirmed(false);
+            $user->setConfirmationToken(bin2hex(random_bytes(32)));
             $em->persist($user);
             $em->flush();
             // Envoi de l'email de confirmation
