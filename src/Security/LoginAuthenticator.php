@@ -28,6 +28,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
+
         $email = $request->getPayload()->getString('email');
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
@@ -44,13 +45,22 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        /**
+         * @var \App\Entity\User $user
+         */
+        $user = $token->getUser(); // Récupération de l'utilisateur authentifié
+        // Si l'utilisateur doit changer son mot de passe, on le redirige vers la page de changement de mot de passe
+        if ($user->isMustChangePassword()) {
+            return new RedirectResponse($this->urlGenerator->generate('app_change_password'));
+        }
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
         // For example:
 
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        // Redirection vers la route home
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
     protected function getLoginUrl(Request $request): string
