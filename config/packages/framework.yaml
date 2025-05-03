@@ -1,7 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-
+    router:
+      default_uri: '%env(APP_URL)%'
     session:
            handler_id: null
            cookie_lifetime: 7200 # Durée de vie de la session en secondes (2 heures)
