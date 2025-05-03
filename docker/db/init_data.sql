@@ -28,7 +28,7 @@ INSERT INTO cinephaliaapi.role (libelle) VALUES
 -- Création de l'utilisateur Admin
 INSERT INTO cinephaliaapi.user (nom, prenom, email, password, is_confirmed,must_change_password) VALUES
     ('Admin', 'Admin', 'admin@cinephoria.cloud',
-     '$2y$13$yflYd6KuWD0/ASpbNcMyxOcZq7BpRYPVta2Q9D5qkZnByZ8BoArHe', true, true);
+     '$2y$10$88NdZXTj1t0Oso2azI9oh.6BWYfNzYxQw6P5UpSfagsuDzfKPxNpq', true, false);
 
 -- Création du rôle Admin
 INSERT INTO public.user_roles (user_id, role_id) VALUES
