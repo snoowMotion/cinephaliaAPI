@@ -30,7 +30,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_home') }}">Accueil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_reservation_film') }}">Réservation</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_film_list') }}">Films</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('contact') }}">Contact</a></li>
 
                         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
                             <li class="nav-item dropdown">

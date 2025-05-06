@@ -1,26 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}Contact - Cinéphoria{% endblock %}
 
 {% block body %}
-<h1>Contact</h1>
+    <div class="container mt-5" style="max-width: 600px;">
+        <h2 class="mb-4 text-center">Contactez-nous</h2>
 
-{% for message in app.flashes('success') %}
-<div class="alert alert-success">{{ message }}</div>
-{% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
 
-{{ form_start(form) }}
-<div class="mb-3">
-    {{ form_row(form.username) }}
-</div>
-<div class="mb-3">
-    {{ form_row(form.subject) }}
-</div>
-<div class="mb-3">
-    {{ form_row(form.message) }}
-</div>
-<div>
-    {{ form_row(form.submit) }}
-</div>
-{{ form_end(form) }}
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.username, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Ex : JeanDupont'}}) }}
+                    {{ form_errors(form.username) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.subject, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.subject, {'attr': {'class': 'form-control', 'placeholder': 'Objet de votre message'}}) }}
+                    {{ form_errors(form.subject) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez votre demande ici...', 'rows': 6}}) }}
+                    {{ form_errors(form.message) }}
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-send-fill me-1"></i> Envoyer
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
