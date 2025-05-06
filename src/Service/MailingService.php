@@ -83,4 +83,21 @@ class MailingService
             $content
         );
     }
+
+    public function sendContactMail(string $subject, string $username, string $message)
+    {
+
+        $content = "
+            <h2>Nom d'utilisateur : {$username},</h2>
+            <p>Message :</p>
+            <p>{$message}</p>
+        ";
+
+        return $this->sendEmail(
+            "carpentier.guillaume.62@gmail.com", // Adresse de destination pour la présentation du projet
+            $username,
+            $subject,
+            $content
+        );
+    }
 }
