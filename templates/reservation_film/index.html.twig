@@ -93,7 +93,17 @@
                             $('#seance').html('<option value="">Sélectionnez une séance</option>');
                             $.each(data, function(key, seance) {
                                 console.log(seance)
-                                $('#seance').append('<option data-place = "'+ seance.nbSiege + '" data-place-pmr = "' + seance.nbSiegePmr + '" value="' + seance.id + '">' + seance.dateDebut.date + " Qualité : " + seance.qualite +  '</option>');
+                                // Formater la date pour affichage lisible
+                                const rawDate = new Date(seance.dateDebut.date);
+                                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                                const dateStr = rawDate.toLocaleDateString('fr-FR', options);
+                                const heure = rawDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                                $('#seance').append(
+                                    '<option data-place="'+ seance.nbSiege +'" data-place-pmr="' + seance.nbSiegePmr + '" value="' + seance.id + '">' +
+                                    `${dateStr} à ${heure} — ${seance.qualite}` +
+                                    '</option>'
+                                );
 
                             });
                             $('#seance').prop('disabled', false);
