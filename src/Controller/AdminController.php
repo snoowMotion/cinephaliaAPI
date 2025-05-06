@@ -33,8 +33,10 @@ class AdminController extends AbstractController
 
             // Récupère ou assigne le rôle EMPLOYE
             $roleEmploye = $em->getRepository(Role::class)->findOneBy(['libelle' => 'ROLE_EMPLOYE']);
+            $roleUser = $em->getRepository(Role::class)->findOneBy(['libelle' => 'ROLE_USER']);
             if ($roleEmploye) {
                 $user->addRole($roleEmploye);
+                $user->addRole($roleUser);
             }
             // Génération du token de confirmation
             $user->setConfirmed(false);
