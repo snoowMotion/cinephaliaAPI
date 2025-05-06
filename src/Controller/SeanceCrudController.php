@@ -38,7 +38,7 @@ final class SeanceCrudController extends AbstractController
             // Associate seats with the session
             $salle = $seance->getSalle();
             for ($i = 0; $i < $salle->getNbPlace(); $i++) {
-                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i]);
+                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i, 'isPMR' => false]);
                 $linkSeanceSiege = new LinkReservationSiege();
                 $linkSeanceSiege->setSeance($seance);
                 $linkSeanceSiege->setSiege($siege);
@@ -46,7 +46,7 @@ final class SeanceCrudController extends AbstractController
             }
 
             for ($i = 0; $i < $salle->getNbPlacePmr(); $i++) {
-                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i]);
+                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i, 'isPMR' => true]);
                 $linkSeanceSiege = new LinkReservationSiege();
                 $linkSeanceSiege->setSeance($seance);
                 $linkSeanceSiege->setSiege($siege);

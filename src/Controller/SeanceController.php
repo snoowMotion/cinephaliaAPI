@@ -71,14 +71,14 @@ class SeanceController extends AbstractController
         try {
             // On crée les liens entre les sièges et la séance
             for ($i = 0; $i < $salle->getNbPlace(); $i++) {
-                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i]);
+                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i, 'isPMR' => false]);
                 $linkSeanceSiege = new LinkReservationSiege();
                 $linkSeanceSiege->setSiege($siege);
                 $entityManager->persist($linkSeanceSiege);
             }
             // On créer les liens entre les places PMR et la séance
             for ($i = 0; $i < $salle->getNbPlacePmr(); $i++) {
-                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i]);
+                $siege = $entityManager->getRepository(Siege::class)->findOneBy(['salle' => $salle, 'numero' => $i, 'isPMR' => true]);
                 $linkSeanceSiege = new LinkReservationSiege();
                 $linkSeanceSiege->setSiege($siege);
                 $entityManager->persist($linkSeanceSiege);
