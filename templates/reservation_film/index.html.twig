@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-
+    <link rel="stylesheet" href="{{ asset('css/reservation.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -33,15 +33,27 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="nbSieges" class="form-label">Nombre de sièges</label>
-            <span id ="nbPlace">Nombre de place disponible :</span>
-            <input type="number" id="nbSieges" class="form-control" min="1" disabled name="nbSieges">
+            <label class="form-label">Places standards</label>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-outline-secondary" id="minusStandard">–</button>
+                <span id="nbSiegesDisplay" class="fs-5">0</span>
+                <button type="button" class="btn btn-outline-primary" id="plusStandard">+</button>
+                <span id="nbPlace" class="text-muted ms-3">Places dispo : 0</span>
+            </div>
+            <input type="hidden" name="nbSieges" id="nbSieges" value="0" />
         </div>
+
         <div class="mb-3">
-            <label for="nbSiegesPMR" class="form-label">Nombre de sièges PMR</label>
-            <span id ="nbPlacePMR">Nombre de place disponible :</span>
-            <input type="number" id="nbSiegesPMR" class="form-control" min="0" disabled name="nbSiegesPMR">
+            <label class="form-label">Places PMR</label>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-outline-secondary" id="minusPMR">–</button>
+                <span id="nbSiegesPMRDisplay" class="fs-5">0</span>
+                <button type="button" class="btn btn-outline-primary" id="plusPMR">+</button>
+                <span id="nbPlacePMR" class="text-muted ms-3">Places PMR dispo : 0</span>
+            </div>
+            <input type="hidden" name="nbSiegesPMR" id="nbSiegesPMR" value="0" />
         </div>
+
         <div class="mb-3">
             <label class="form-label">Prix total</label>
             <p id="prixTotal" class="fw-bold">0 €</p>
@@ -154,7 +166,49 @@
             if (selectedCinema) {
                 $('#cinema').val(selectedCinema).trigger('change');
             }
+            function updateDisplay(field, display, max) {
+                const val = parseInt(field.val());
+                display.text(val);
+                display.addClass('pulse');
+                setTimeout(() => display.removeClass('pulse'), 300);
+                calculerPrixTotal();
+            }
 
+            $('#plusStandard').off('click').on('click', function () {
+                const field = $('#nbSieges');
+                const max = parseInt($('#nbSieges').attr('max')) || 0;
+                let val = parseInt(field.val());
+                if (val < max) {
+                    field.val(val + 1);
+                    updateDisplay(field, $('#nbSiegesDisplay'), max);
+                }
+            });
+            $('#minusStandard').off('click').on('click', function () {
+                const field = $('#nbSieges');
+                let val = parseInt(field.val());
+                if (val > 0) {
+                    field.val(val - 1);
+                    updateDisplay(field, $('#nbSiegesDisplay'));
+                }
+            });
+
+            $('#plusPMR').off('click').on('click', function () {
+                const field = $('#nbSiegesPMR');
+                const max = parseInt($('#nbSiegesPMR').attr('max')) || 0;
+                let val = parseInt(field.val());
+                if (val < max) {
+                    field.val(val + 1);
+                    updateDisplay(field, $('#nbSiegesPMRDisplay'), max);
+                }
+            });
+            $('#minusPMR').off('click').on('click', function () {
+                const field = $('#nbSiegesPMR');
+                let val = parseInt(field.val());
+                if (val > 0) {
+                    field.val(val - 1);
+                    updateDisplay(field, $('#nbSiegesPMRDisplay'));
+                }
+            });
 
         });
 
@@ -170,6 +224,8 @@
             $('#prixTotal').text(`${total.toFixed(2)} €`);
             return total;
         }
+
+
     </script>
 {% endblock %}
 {% endblock %}
