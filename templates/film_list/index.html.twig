@@ -135,6 +135,11 @@
         <div class="card-body d-flex flex-column">
 
             <h5 class="card-title">${film.titre}</h5>
+        <!-- Note -->
+        <div class="mb-2">
+            <i class="bi bi-star-fill text-warning"></i>
+            ${film.noteAvis ? `${film.noteAvis.toFixed(1)} / 5` : 'Non noté'}
+        </div>
             <p class="card-text">${film.synopsis}</p>
 
             <!-- Séances -->

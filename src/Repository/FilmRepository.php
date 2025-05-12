@@ -71,6 +71,19 @@ class FilmRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getNoteMoyenneByFilm(Film $film): float
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT AVG(a.note) as noteMoyenne
+            FROM App\Entity\Avis a
+            JOIN a.reservation r
+            JOIN r.seance s
+            WHERE s.film = :film'
+        )->setParameter('film', $film);
+
+        return (float) $query->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Film[] Returns an array of Film objects
     //     */

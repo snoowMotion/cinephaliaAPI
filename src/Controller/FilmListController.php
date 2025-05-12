@@ -81,6 +81,7 @@ class FilmListController extends AbstractController
                     ]
                 ];
             }
+           $noteMoyenne = $filmRepository->getNoteMoyenneByFilm($film);
             $rep[] = [
                 'id' => $film->getId(),
                 'titre' => $film->getTitre(),
@@ -88,7 +89,7 @@ class FilmListController extends AbstractController
                 'afficheUrl' => $film->getAfficheUrl(),
                 'ageMini' => $film->getAgeMini(),
                 'label' => $film->getLabel(),
-                'noteAvis' => 4,
+                'noteAvis' => $noteMoyenne,
                 'seances' => $seanceData
             ];
         }
