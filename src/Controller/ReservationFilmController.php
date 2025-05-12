@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -119,7 +120,7 @@ class ReservationFilmController extends AbstractController
      * @param LinkReservationSiegeRepository $linkReservationSiegeRepository Injection du repository LinkReservationSiege
      * @param SiegeRepository $siegeRepository Injection du repository Siege
      * @param SeanceRepository $seanceRepository Injection du repository Seance
-     * @return JsonResponse
+     * @return RedirectResponse
      */
     #[Route('/reservation/reserve', name: 'reserve', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -130,7 +131,7 @@ class ReservationFilmController extends AbstractController
         SeanceRepository $seanceRepository,
         ReservationRepository $reservationRepository,
         EntityManagerInterface $entityManager
-    ): JsonResponse
+    ): RedirectResponse
     {
         // On récupère les données de la requête
         $seance = $request->request->get('seance');
@@ -138,12 +139,14 @@ class ReservationFilmController extends AbstractController
         $nbSiegesPmr = $request->request->get('nbSiegesPMR');
 
         if (!isset($seance) || !isset($nbSieges) || !isset($nbSiegesPmr)) {
-            return new JsonResponse(['message' => 'Missing data'], Response::HTTP_BAD_REQUEST);
+            $this->addFlash('error', 'Données manquantes.');
+            return $this->redirectToRoute('app_reservation_film');
         }
 
         $seance = $seanceRepository->find($seance);
         if (!$seance) {
-            return new JsonResponse(['message' => 'Seance not found'], Response::HTTP_NOT_FOUND);
+            $this->addFlash('error', 'Séance introuvable.');
+            return $this->redirectToRoute('app_reservation_film');
         }
 
         // Création de l'entité Reservation
@@ -157,7 +160,8 @@ class ReservationFilmController extends AbstractController
         for ($i = 0; $i < $nbSieges; $i++) {
             $link = $linkReservationSiegeRepository->getFirstPlace($seance ->getId(), false);
             if (!$link) {
-                return new JsonResponse(['message' => 'Not enough normal seats available'], Response::HTTP_BAD_REQUEST);
+                $this->addFlash('error', 'Pas assez de sièges disponibles.');
+                return $this->redirectToRoute('app_reservation_film');
             }
             $link->setReservation($reservation);
             $entityManager->persist($link);
@@ -168,13 +172,15 @@ class ReservationFilmController extends AbstractController
         for ($i = 0; $i < $nbSiegesPmr; $i++) {
             $link = $linkReservationSiegeRepository->getFirstPlace($seance ->getId(), true);
             if (!$link) {
-                return new JsonResponse(['message' => 'Not enough PMR seats available'], Response::HTTP_BAD_REQUEST);
+                $this->addFlash('error', 'Pas assez de sièges PMR disponibles.');
+                return $this->redirectToRoute('app_reservation_film');
             }
             $link->setReservation($reservation);
             $entityManager->persist($link);
             $entityManager->flush();
         }
         $entityManager->flush();
-        return new JsonResponse(['message' => 'Reservation completed successfully'], Response::HTTP_OK);
+        $this->addFlash('success', 'Votre réservation a été effectuée avec succès !');
+        return $this->redirectToRoute('app_my_space');
     }
 }
