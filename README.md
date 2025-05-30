@@ -98,7 +98,7 @@ Entreprise fictive : **Cinéphoria**, acteur majeur du cinéma en France et en B
 
 ## 🔗 Liens utiles
 
-- 📁 [Charte graphique](https://cinephoriastudi.atlassian.net/wiki/spaces/CW/pages/65869/Charte+Graphique+pour+le+Site+Web+Cinephoria)
+- 📁 [Charte graphique]([https://cinephoriastudi.atlassian.net/wiki/spaces/CW/pages/65869/Charte+Graphique+pour+le+Site+Web+Cinephoria](https://cinephoriastudi.atlassian.net/wiki/x/TQEB))
 - 📁 [Manuel utilisateur](./docs/manuel_utilisateur_web.md)
 - 📁 [Documentation Gestion projet](./docs/documentation_gestion_projet.md)
 - ✅ [Jira](https://cinephoriastudi.atlassian.net/jira/software/projects/KAN/boards/1)
