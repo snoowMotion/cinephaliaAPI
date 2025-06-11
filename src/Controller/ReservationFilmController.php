@@ -10,6 +10,7 @@ use App\Repository\LinkReservationSiegeRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\SeanceRepository;
 use App\Repository\SiegeRepository;
+use App\Service\ReservationNoSqlService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -130,7 +131,8 @@ class ReservationFilmController extends AbstractController
         SiegeRepository $siegeRepository,
         SeanceRepository $seanceRepository,
         ReservationRepository $reservationRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ReservationNoSQLService $reservationNoSQLService
     ): RedirectResponse
     {
         // On récupère les données de la requête
@@ -155,10 +157,16 @@ class ReservationFilmController extends AbstractController
         $reservation->setSeance($seance);
         $reservation->setFinish(false);
         $entityManager->persist($reservation);
-
+        $allSiege = array();
         // Réservation des places normales
         for ($i = 0; $i < $nbSieges; $i++) {
             $link = $linkReservationSiegeRepository->getFirstPlace($seance ->getId(), false);
+            if ($link) {
+                $allSiege[] = [
+                    'salle' => $link->getSiege()->getSalle()->getId(),
+                    'numeroSiege' => $link->getSiege()->getNumero()
+                ];
+            }
             if (!$link) {
                 $this->addFlash('error', 'Pas assez de sièges disponibles.');
                 return $this->redirectToRoute('app_reservation_film');
@@ -175,12 +183,44 @@ class ReservationFilmController extends AbstractController
                 $this->addFlash('error', 'Pas assez de sièges PMR disponibles.');
                 return $this->redirectToRoute('app_reservation_film');
             }
+            if ($link) {
+                $allSiege[] = [
+                    'salle' => $link->getSiege()->getSalle()->getId(),
+                    'numeroSiege' => $link->getSiege()->getNumero()
+                ];
+            }
             $link->setReservation($reservation);
             $entityManager->persist($link);
             $entityManager->flush();
         }
         $entityManager->flush();
         $this->addFlash('success', 'Votre réservation a été effectuée avec succès !');
+        $noSqlArray = array();
+        $noSqlArray["userId"] = $this->getUser()->getId();
+        $noSqlArray["filmId"] = $seance->getFilm()->getId();
+        $noSqlArray["seanceId"] = $seance->getId();
+        $noSqlArray["cinema"] = $seance->getSalle()->getCinema()->getId();
+        $noSqlArray["places"] = $allSiege;
+        $noSqlArray["qualite"] = $seance->getSalle()->getQualite()->getLibelle();
+        $noSqlArray["prixTotal"] = $seance->getSalle()->getQualite()->getPrix() * ($nbSieges + $nbSiegesPmr);
+        $this->SaveRegisistration($reservationNoSQLService, $noSqlArray);
         return $this->redirectToRoute('app_my_space');
+    }
+
+
+    public function SaveRegisistration(ReservationNoSQLService $service, array $data): bool
+    {
+        // Exemple de données à enregistrer
+        $reservation = $service->enregistrerReservation([
+            'userId' => $data["userId"],
+            'filmId' => $data['filmId'],
+            'seanceId' => $data['seanceId'],
+            'cinema' => $data['cinema'],
+            'places' => $data['places'],
+            'qualite' => $data['qualite'],
+            'prixTotal' => $data['prixTotal'],
+        ]);
+
+        return true;
     }
 }
