@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\ReservationDocument;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Form\EmployeType;
 use App\Service\MailingService;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,6 +98,18 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ajout_employe.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/admin/reservations-nosql', name: 'admin_reservations_nosql')]
+    public function afficherReservationsNoSQL(DocumentManager $documentManager): Response
+    {
+        $reservations = $documentManager
+            ->getRepository(ReservationDocument::class)
+            ->findAll();
+
+        return $this->render('admin/reservations_nosql.html.twig', [
+            'reservations' => $reservations,
         ]);
     }
 }

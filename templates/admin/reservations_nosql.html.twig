@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}📋 Réservations NoSQL{% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg rounded-4 border-0">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">📋 Réservations enregistrées (NoSQL)</h2>
+
+                        {% if reservations is empty %}
+                            <p class="text-center">Aucune réservation trouvée.</p>
+                        {% else %}
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Utilisateur</th>
+                                    <th>Film</th>
+                                    <th>Qualité</th>
+                                    <th>Places</th>
+                                    <th>Prix</th>
+                                    <th>Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for reservation in reservations %}
+                                    <tr>
+                                        <td>{{ reservation.id }}</td>
+                                        <td>{{ reservation.userId }}</td>
+                                        <td>{{ reservation.filmId }}</td>
+                                        <td>{{ reservation.qualite }}</td>
+                                        <td>
+                                            {% for place in reservation.places %}
+                                                <div>Salle {{ place.salle }} - Siège {{ place.numeroSiege }}</div>
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ reservation.prixTotal }} €</td>
+                                        <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+    <script src="{{ asset('scripts/adminReservation.js') }}"></script>
+{% endblock %}
