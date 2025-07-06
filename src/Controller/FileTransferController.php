@@ -20,7 +20,6 @@ class FileTransferController extends AbstractController
     public function uploadFichier(Request $request): JsonResponse
     {
         $fichier = $request->files->get('file');
-
         if (!$fichier instanceof UploadedFile) {
             return new JsonResponse(['error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
         }
@@ -32,7 +31,9 @@ class FileTransferController extends AbstractController
         // On ajoute un identifiant unique pour éviter les doublons
         $nomFichier .= '-' . uniqid();
         // On ajoute l'extension du fichier
+
         $nomFichier .= '.' . $fichier->guessExtension();
+
         // On déplace le fichier dans le répertoire de destination
         $fichier->move($this->getParameter('kernel.project_dir') . '/public/upload/affiche', $nomFichier);
 

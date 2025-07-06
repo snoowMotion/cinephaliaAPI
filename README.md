@@ -68,12 +68,12 @@ Entreprise fictive : **Cinéphoria**, acteur majeur du cinéma en France et en B
 3. Créer la base de données :
    ```bash
     sudo docker compose exec db psql -U cinephaliadoctrine -d cinephalia
-    CREATE DATABASE cinephaliaapi WITH OWNER cinephaliadocrine ENCODING 'UTF8';
+    CREATE DATABASE cinephaliaapi WITH OWNER cinephaliadoctrine ENCODING 'UTF8';
     ```
 
 4. Mettez à jour le schéma de la base de données avec Doctrine :
    ```bash
-   docker exec -it cinephoria-php php bin/console doctrine:schema:update --force
+   docker exec -it cinephalia_php php bin/console doctrine:schema:update --force
     ```
 5. Lancez le script de remplissage de la base de données :
    ```bash
