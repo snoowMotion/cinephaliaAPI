@@ -10,6 +10,6 @@ WORKDIR /var/www/html
 COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
-RUN echo -e "upload_max_filesize=10M\npost_max_size=20M" > /usr/local/etc/php/conf.d/uploads.ini
+RUN echo "upload_max_filesize=10M\npost_max_size=20M" > /usr/local/etc/php/conf.d/uploads.ini
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb \
