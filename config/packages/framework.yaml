@@ -3,9 +3,11 @@ framework:
     secret: '%env(APP_SECRET)%'
     router:
       default_uri: '%env(APP_URL)%'
+    trusted_proxies: [ '127.0.0.1', 'REMOTE_ADDR' ] # ou mets l'IP du proxy si dédiée
+    trusted_headers: [ 'x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-host' ]
     session:
-           handler_id: null
-           cookie_lifetime: 7200 # Durée de vie de la session en secondes (2 heures)
+        cookie_secure: auto
+        cookie_samesite: lax
 
     #esi: true
     #fragments: true
