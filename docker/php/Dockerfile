@@ -13,3 +13,4 @@ ENTRYPOINT ["entrypoint.sh"]
 RUN echo "upload_max_filesize=10M\npost_max_size=20M" > /usr/local/etc/php/conf.d/uploads.ini
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb \
+

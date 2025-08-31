@@ -79,7 +79,25 @@ Entreprise fictive : **Cinéphoria**, acteur majeur du cinéma en France et en B
    ```bash
    sudo docker compose exec -T db psql cinephaliadoctrine -d cinephalia < docker/db/init_data.sql
    ```
-
+6. Configurez le .env avec les informations suivantes : 
+    ```dotenv
+   APP_ENV=dev
+   APP_SECRET=monsecret
+   APP_URL=monurl
+   MONGODB_URL=connectionStringMongodb
+   MONGODB_DB=cinephalia
+   DATABASE_URL=connectionStringDatabase
+   CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+   JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+   JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+   JWT_PASSPHRASE=cinephalia
+   JWT_TOKEN_TTL=3600
+   MAILJET_API_KEY=maCléMailJet
+   MAILJET_API_SECRET=MonApiSecretMailJet
+   MAILJET_FROM_EMAIL=noresponse@cinephoria.cloud
+   MAILJET_FROM_NAME=Cinéphoria
+   MAILER_DSN=null://null
+    ```
 6. Accédez à l'application via `http://localhost:8000/login`
 
 

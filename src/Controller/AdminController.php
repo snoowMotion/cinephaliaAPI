@@ -15,10 +15,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AdminController extends AbstractController
 {
     #[Route('/admin/employe/ajouter', name: 'admin_employe_ajouter')]
+    #[IsGranted('ROLE_ADMIN')]
+    /**
+     * Permet d'ajouter un employé
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UserPasswordHasherInterface $hasher
+     * @param MailingService $mailer
+     * @return Response
+     */
     public function ajouterEmploye(
         Request $request,
         EntityManagerInterface $em,
@@ -64,6 +74,7 @@ class AdminController extends AbstractController
      * @return Response
      */
     #[Route('/admin/employes', name: 'admin_employes')]
+    #[IsGranted('ROLE_ADMIN')]
     public function listeEmployes(EntityManagerInterface $em): Response
     {
         $employes =$em->getRepository(User::class)->createQueryBuilder('u')

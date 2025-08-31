@@ -47,4 +47,4 @@ security:
         - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
         - { path : ^/filmVisiteur/list, roles: PUBLIC_ACCESS }
         - { path : ^/create/user, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY } # ou ajusté selon tes besoins
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

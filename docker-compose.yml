@@ -1,6 +1,57 @@
 version: '3.8'
 
 services:
+  # Reverse proxy Nginx qui gère 80/443 et les vhosts dynamiquement
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: cinephoria_nginx_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./docker/proxy/certs:/etc/nginx/certs:rw
+      - ./docker/proxy/vhost.d:/etc/nginx/vhost.d
+      - ./docker/proxy/html:/usr/share/nginx/html
+    restart: unless-stopped
+
+  # Compagnon Let's Encrypt (ACME) qui émet/renouvelle les certificats
+  acme:
+    image: nginxproxy/acme-companion
+    container_name: cinephoria_acme
+    environment:
+      NGINX_PROXY_CONTAINER: cinephoria_nginx_proxy
+      # Optionnel : force la redirection HTTP -> HTTPS et HSTS
+      # DEFAULT_EMAIL utilisé pour les certs si un service n'a pas LETSENCRYPT_EMAIL
+      DEFAULT_EMAIL: "contact@cinephoria.cloud"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker/proxy/certs:/etc/nginx/certs:rw
+      - ./docker/proxy/vhost.d:/etc/nginx/vhost.d
+      - ./docker/proxy/html:/usr/share/nginx/html
+    depends_on:
+      - nginx-proxy
+    restart: unless-stopped
+
+  # Ton Nginx d'application (sert le code PHP via php-fpm)
+  web:
+    image: nginx:alpine
+    container_name: cinephoria_web
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/nginx/logs:/var/log/nginx
+    expose:
+      - "80"
+    environment:
+      VIRTUAL_HOST: "cinephoria.cloud,www.cinephoria.cloud"
+      LETSENCRYPT_HOST: "cinephoria.cloud,www.cinephoria.cloud"
+      LETSENCRYPT_EMAIL: "contact@cinephoria.cloud"   # mets ton email
+    depends_on:
+      - php
+    restart: unless-stopped
+
+  # Ton PHP-FPM tel quel
   php:
     build:
       context: .
@@ -9,21 +60,9 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
-    depends_on:
-      - db
     env_file:
       - .env
-
-  nginx:
-    image: nginx:alpine
-    container_name: cinephalia_nginx
-    ports:
-      - "80:80"
-    volumes:
-      - .:/var/www/html
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - php
+    restart: unless-stopped
 
   db:
     image: postgres:15
